@@ -1,6 +1,8 @@
-var morgan = require('morgan'), // used for logging incoming request
-  bodyParser = require('body-parser'),
-  path = require('path');
+    var morgan = require('morgan'), // used for logging incoming request
+    bodyParser = require('body-parser'),
+    path       = require('path'),
+
+    db = require('./config/db.config');
 
 
 module.exports = function(app, express) {
