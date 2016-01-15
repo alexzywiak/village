@@ -62,11 +62,13 @@ function createTables() {
   });
   return sequence(tables);
 }
-createTables()
-  .then(function() {
-    console.log('Tables created!!');
-    process.exit(0);
-  })
-  .catch(function(error) {
-    throw error;
-  });
+
+module.exports = function(){
+  return createTables()
+    .then(function() {
+      console.log('Tables created!!');
+    })
+    .catch(function(error) {
+      throw error;
+    });
+};
