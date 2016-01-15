@@ -23,5 +23,14 @@
     "mysql": "^2.10.2",
     "path": "^0.12.7",
     "when": "^3.7.7"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "gulp": "^3.9.0",
+    "gulp-jshint": "^2.0.0",
+    "gulp-mocha": "^2.2.0",
+    "jshint": "^2.9.1",
+    "mocha": "^2.3.4",
+    "supertest": "^1.1.0"
   }
 }
