@@ -16,20 +16,19 @@ describe('Task Model', function() {
 
   before(function(done) {
     migrate().then(function() {
-      return new User({name: 'billy the kid'}).save();
-    }).then(function(){
+      return new User({
+        name: 'billy the kid',
+        password: 'makemyday'
+      }).save();
+    }).then(function() {
       done();
     });
   });
 
-  after(function(done) {
-    migrate().then(function(){
-      done();
-    });
-  });
-
-  it('should have a user saved on the db', function(done){
-    new User({name: 'billy the kid'}).fetch().then(function(user){
+  it('should have a user saved on the db', function(done) {
+    new User({
+      name: 'billy the kid'
+    }).fetch().then(function(user) {
       expect(user.get('name')).to.equal('billy the kid');
       done();
     });
@@ -58,10 +57,19 @@ describe('Task Model', function() {
   });
 
   it('should associate a user with a task', function(done) {
-    User.where({name: 'billy the kid'}).fetch().then(function(user){
-      return new Task({name:'ok corral', user_id: user.get('id')}).save();
-    }).then(function(){
-      User.where({name: 'billy the kid'}).fetch({withRelated: ['task']}).then(function(user){
+    User.where({
+      name: 'billy the kid'
+    }).fetch().then(function(user) {
+      return new Task({
+        name: 'ok corral',
+        user_id: user.get('id')
+      }).save();
+    }).then(function() {
+      User.where({
+        name: 'billy the kid'
+      }).fetch({
+        withRelated: ['task']
+      }).then(function(user) {
         expect(user.get('name')).to.equal('billy the kid');
         expect(user.related('task').models.length).to.equal(1);
         expect(user.related('task').models[0].get('name')).to.equal('ok corral');
