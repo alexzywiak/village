@@ -21,16 +21,87 @@ var User = db.Model.extend({
     });
   },
 
-  task: function() {
+  tasks: function() {
     return this.hasMany(Task);
   },
 
-  monitorTask: function() {
+  monitoredTasks: function() {
     return this.belongsToMany(Task);
   },
 
   friends: function() {
     return this.belongsToMany(User, 'users_friends', 'user_id', 'friend_id');
+  },
+
+  updateFriends: function(updateFriendId) {
+    var currentUser = this;
+    return User.forge(currentUser.attributes).fetch({
+      withRelated: ['friends']
+    }).then(function(user) {
+
+      var currentFriendId = user.related('friends').models.map(function(friend) {
+        return friend.get('id');
+      });
+
+      // Get all ids in updateFriendId not in currentFriendId
+      var toAdd = this.modifyFriends.bind(this, 
+          _.difference(updateFriendId, currentFriendId),
+          'attach');
+
+      // Get all ids in currentFriendId not in updateFriendId
+      var toRemove = this.modifyFriends.bind(this, 
+          _.difference(currentFriendId, updateFriendId),
+          'detach');
+
+      return BbPromise.each([toAdd, toRemove], function(task){
+        return task();
+      });
+    });
+  },
+
+
+  /**
+   * Adds all friends by id in friendIdArray to the User specified by userId
+   * Adds User as a friend to all Friends
+   * @param {[type]} friendIdArray [array of new friends' ids]
+   * @param {[type]} friendIdArray [array of new friends' ids]
+   */
+  modifyFriends: function(friendIdArray, method, done) {
+    var id = this.get('id');
+    // Attach new friends
+    return this.friends()[method](friendIdArray).then(function() {
+      if (!done) {
+        // Grab new friend models from DB
+        return User.query('whereIn', 'id', friendIdArray)
+          .fetchAll().then(function(friends) {
+            // Attach current user as a friend to each friend model
+            return BbPromise.map(friends.models, function(friend) {
+              return friend.modifyFriends([id], method, true);
+            });
+          });
+      } else {
+        return this;
+      }
+    }.bind(this));
+  },
+
+  removeFriends: function(friendIdArray, done) {
+    var id = this.get('id');
+    // Attach new friends
+    return this.friends().detach(friendIdArray).then(function() {
+      if (!done) {
+        // Grab new friend models from DB
+        return User.query('whereIn', 'id', friendIdArray)
+          .fetchAll().then(function(friends) {
+            // Attach current user as a friend to each friend model
+            return BbPromise.map(friends.models, function(friend) {
+              return friend.removeFriends([id], true);
+            });
+          });
+      } else {
+        return this;
+      }
+    }.bind(this));
   }
 }, {
 
@@ -65,50 +136,8 @@ var User = db.Model.extend({
         });
       });
     }.bind(this));
-  },
-
-  /**
-   * Adds all friends by id in friendIdArray to the User specified by userId
-   * Adds User as a friend to all Friends
-   * @param {[int]} userId         [id of the user to add friends]
-   * @param {[type]} friendIdArray [array of new friends' ids]
-   */
-  addFriends: function(userId, friendIdArray) {
-    // Grab the current user
-    return User
-      .forge({
-        id: userId
-      })
-      .fetch({
-        withRelated: ['friends']
-      })
-      .then(function(user) {
-
-        var currentFriendsIds = user.relations.friends.models.map(function(model) {
-          return model.get('id');
-        });
-
-        friendIdArray = friendIdArray.filter(function(id){
-          return currentFriendsIds.indexOf(id) === -1;
-        });
-
-          // Add new friends
-        user.friends()
-          .attach(friendIdArray);
-
-        return User
-          .query('whereIn', 'id', friendIdArray).fetchAll();
-      }).then(function(friends) {
-
-        // Add user as a friend of each user from friendIdArray
-        friends.models.forEach(function(friend) {
-          friend.friends().attach(userId);
-        });
-
-        // Resolve with new friends collection
-        return friends;
-      });
   }
+
 });
 
 module.exports = User;
