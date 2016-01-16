@@ -17,6 +17,12 @@ var Schema = {
     description: {type: 'string', maxlength: 150, nullable: false},
     created_at: {type: 'dateTime', nullable: false},
     updated_at: {type: 'dateTime', nullable: false}
+  },
+
+  users_friends: {
+    id: {type: 'increments', nullable: false, primary: true},
+    user_id: {type: 'integer', nullable: false, unsigned: true},
+    friend_id: {type: 'integer', nullable: false, unsigned: true}
   }
 };
 
