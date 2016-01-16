@@ -51,18 +51,18 @@ describe('User Model', function() {
 
   afterEach(function(done) {
     // Clears entries from the db
-    BbPromise.each(tables, function(table){     
+    BbPromise.each(tables, function(table) {
       return db.knex(table).del();
-    }).then(function(){
+    }).then(function() {
       done();
     });
   });
 
-  after(function(done){
+  after(function(done) {
     // Drops tables from DB
-    BbPromise.each(tables, function(table){
+    BbPromise.each(tables, function(table) {
       return db.knex.schema.dropTable(table);
-    }).then(function(){
+    }).then(function() {
       done();
     });
   });
@@ -80,12 +80,18 @@ describe('User Model', function() {
   });
 
   it('should update a user', function(done) {
-    User.forge({id: savedUserIds[0]}).fetch().then(function(user) {
+    User.forge({
+      id: savedUserIds[0]
+    }).fetch().then(function(user) {
       expect(user.get('name')).to.equal('billy the kid');
-      return user.save({name: 'rock the casbah'});
-    }).then(function(){
-      return User.forge({id: savedUserIds[0]}).fetch()
-    }).then(function(user){
+      return user.save({
+        name: 'rock the casbah'
+      });
+    }).then(function() {
+      return User.forge({
+        id: savedUserIds[0]
+      }).fetch()
+    }).then(function(user) {
       expect(user.get('name')).to.equal('rock the casbah');
       done();
     });
@@ -154,12 +160,12 @@ describe('User Model', function() {
       });
     });
 
-    describe('modifyFriends method', function() {
+    describe('executeUpdate method', function() {
 
       it('should add friends', function(done) {
         User.forge({
           id: savedUserIds[0]
-        }).modifyFriends(savedUserIds.slice(1), 'attach').then(function(results) {
+        }).executeUpdate(savedUserIds.slice(1), 'friends', 'attach', true).then(function(results) {
 
           expect(results.length).to.equal(2);
 
@@ -185,7 +191,7 @@ describe('User Model', function() {
       it('should not add the same friend twice', function(done) {
         User.forge({
           id: savedUserIds[0]
-        }).modifyFriends(savedUserIds.slice(1), 'attach').then(function(friends) {
+        }).executeUpdate(savedUserIds.slice(1), 'friends', 'attach', true).then(function(friends) {
           User.forge({
             id: savedUserIds[0]
           }).fetch({
@@ -197,14 +203,11 @@ describe('User Model', function() {
         });
       });
 
-    }); // end describe
-
-    describe('removeFriend method', function() {
-      it('should remove friends through model\'s removeFriend method', function(done) {
+      it('should remove friends', function(done) {
 
         User.forge({
           id: savedUserIds[0]
-        }).modifyFriends(savedUserIds.slice(1), 'detach').then(function(friends) {
+        }).executeUpdate(savedUserIds.slice(1), 'friends', 'detach', true).then(function(friends) {
           User.forge({
             id: savedUserIds[0]
           }).fetch({
@@ -232,13 +235,13 @@ describe('User Model', function() {
       });
     }); // end describe
 
-    describe('updateFriends Method', function() {
+    describe('updateRelations Method', function() {
 
       it('should add new friends', function(done) {
 
         User.forge({
           id: savedUserIds[0]
-        }).updateFriends([savedUserIds[1]]).then(function() {
+        }).updateRelations([savedUserIds[1]], 'friends').then(function() {
 
           User.query('whereIn', 'id', savedUserIds)
             .fetchAll({
@@ -261,7 +264,7 @@ describe('User Model', function() {
 
         User.forge({
             id: savedUserIds[0]
-          }).updateFriends(savedUserIds.slice(1))
+          }).updateRelations(savedUserIds.slice(1), 'friends')
           .then(function() {
 
             return User.forge({
@@ -273,7 +276,7 @@ describe('User Model', function() {
           }).then(function(user) {
 
             expect(user.related('friends').models.length).to.equal(2);
-            return user.updateFriends([savedUserIds[1]]);
+            return user.updateRelations([savedUserIds[1]], 'friends');
 
           }).then(function() {
 

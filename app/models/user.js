@@ -33,69 +33,74 @@ var User = db.Model.extend({
     return this.belongsToMany(User, 'users_friends', 'user_id', 'friend_id');
   },
 
-  updateFriends: function(updateFriendId) {
+  /**
+   * Updates the specified many to many relationship to the id array provided.
+   * Will add any new relations from the array, and will delete any current relations
+   * that are not present in the provided array.
+   * @param  {[array]} updateIdArray [id array to update to]
+   * @param  {[string]} relation     [relation to update]
+   * @return {[promise]}             [resolves with current user]
+   */
+  updateRelations: function(updateIdArray, relation) {
+
     var currentUser = this;
+
+    var mutualRelationships = ['friends'];
+
+    var mutual = _.includes(mutualRelationships, relation);
+
     return User.forge(currentUser.attributes).fetch({
-      withRelated: ['friends']
+      withRelated: [relation]
     }).then(function(user) {
 
-      var currentFriendId = user.related('friends').models.map(function(friend) {
-        return friend.get('id');
+      var currentIdArray = user.related(relation).models.map(function(model) {
+        return model.get('id');
       });
 
-      // Get all ids in updateFriendId not in currentFriendId
-      var toAdd = this.modifyFriends.bind(this, 
-          _.difference(updateFriendId, currentFriendId),
-          'attach');
+      // Get all ids in updateIdArray not in currentIdArray
+      var toAdd = this.executeUpdate.bind(this,
+        _.difference(updateIdArray, currentIdArray),
+        relation,
+        'attach',
+        mutual);
 
-      // Get all ids in currentFriendId not in updateFriendId
-      var toRemove = this.modifyFriends.bind(this, 
-          _.difference(currentFriendId, updateFriendId),
-          'detach');
+      // Get all ids in currentIdArray not in updateIdArray
+      var toRemove = this.executeUpdate.bind(this,
+        _.difference(currentIdArray, updateIdArray),
+        relation,
+        'detach',
+        mutual);
 
-      return BbPromise.each([toAdd, toRemove], function(task){
+      return BbPromise.each([toAdd, toRemove], function(task) {
         return task();
+      }).then(function(){
+        return currentUser;
       });
     });
   },
 
-
   /**
-   * Adds all friends by id in friendIdArray to the User specified by userId
-   * Adds User as a friend to all Friends
-   * @param {[type]} friendIdArray [array of new friends' ids]
-   * @param {[type]} friendIdArray [array of new friends' ids]
+   * Executes many to many update on specified relation.
+   * Can attach/detach according to specified method.
+   * If mutual, then function will also run the same commands on all relations.
+   * ie. Delete friend from user's friend list, also delete user from friend's friend list.
+   * @param  {[array]} idArray   [list of relations' ids]
+   * @param  {[string]} relation [relation to modify]
+   * @param  {[string]} method   [attach/detach to add or remove]
+   * @param  {[boolean]} mutual  [true to perform reciprocal operation]
+   * @return {[promise]}         [resolves with modified relations]
    */
-  modifyFriends: function(friendIdArray, method, done) {
+  executeUpdate: function(idArray, relation, method, mutual) {
     var id = this.get('id');
     // Attach new friends
-    return this.friends()[method](friendIdArray).then(function() {
-      if (!done) {
+    return this[relation]()[method](idArray).then(function() {
+      if (mutual) {
         // Grab new friend models from DB
-        return User.query('whereIn', 'id', friendIdArray)
-          .fetchAll().then(function(friends) {
+        return User.query('whereIn', 'id', idArray)
+          .fetchAll().then(function(models) {
             // Attach current user as a friend to each friend model
-            return BbPromise.map(friends.models, function(friend) {
-              return friend.modifyFriends([id], method, true);
-            });
-          });
-      } else {
-        return this;
-      }
-    }.bind(this));
-  },
-
-  removeFriends: function(friendIdArray, done) {
-    var id = this.get('id');
-    // Attach new friends
-    return this.friends().detach(friendIdArray).then(function() {
-      if (!done) {
-        // Grab new friend models from DB
-        return User.query('whereIn', 'id', friendIdArray)
-          .fetchAll().then(function(friends) {
-            // Attach current user as a friend to each friend model
-            return BbPromise.map(friends.models, function(friend) {
-              return friend.removeFriends([id], true);
+            return BbPromise.map(models.models, function(model) {
+              return model.executeUpdate([id], relation, method, false);
             });
           });
       } else {
