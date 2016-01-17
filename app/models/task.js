@@ -1,14 +1,20 @@
+var _ = require('lodash');
+var BbPromise = require('bluebird');
+
 var db = require('../config/bookshelf.config');
-var User = require('./user');
+
+require('./user');
 
 var Task = db.Model.extend({
   tableName: 'tasks',
   hasTimestamps: true,
+  
   monitors: function() {
-    return this.belongsToMany(User);
+    return this.belongsToMany('User', 'tasks_users', 'task_id', 'user_id');
   },
+
   user: function() {
-    return this.belongsTo(User, 'user_id');
+    return this.belongsTo('User', 'user_id');
   },
 
   /**
@@ -21,13 +27,13 @@ var Task = db.Model.extend({
    */
   updateRelations: function(updateIdArray, relation) {
 
-    var currentUser = this;
-    console.log(this);
+    var self = this;
+
     var mutualRelationships = ['friends'];
 
     var mutual = _.includes(mutualRelationships, relation);
 
-    return User.forge(currentUser.attributes).fetch({
+    return Task.forge(self.attributes).fetch({
       withRelated: [relation]
     }).then(function(user) {
 
@@ -52,7 +58,7 @@ var Task = db.Model.extend({
       return BbPromise.each([toAdd, toRemove], function(task) {
         return task();
       }).then(function() {
-        return currentUser;
+        return self;
       });
     });
   },
@@ -74,7 +80,7 @@ var Task = db.Model.extend({
     return this[relation]()[method](idArray).then(function() {
       if (mutual) {
         // Grab new friend models from DB
-        return User.query('whereIn', 'id', idArray)
+        return Task.query('whereIn', 'id', idArray)
           .fetchAll().then(function(models) {
             // Attach current user as a friend to each friend model
             return BbPromise.map(models.models, function(model) {
@@ -88,4 +94,4 @@ var Task = db.Model.extend({
   }
 });
 
-module.exports = Task;
+module.exports = db.model('Task', Task);

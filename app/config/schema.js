@@ -23,6 +23,12 @@ var Schema = {
     id: {type: 'increments', nullable: false, primary: true},
     user_id: {type: 'integer', nullable: false, unsigned: true},
     friend_id: {type: 'integer', nullable: false, unsigned: true}
+  },
+
+  tasks_users: {
+    id: {type: 'increments', nullable: false, primary: true},
+    user_id: {type: 'integer', nullable: false, unsigned: true},
+    task_id: {type: 'integer', nullable: false, unsigned: true}
   }
 };
 

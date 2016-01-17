@@ -2,9 +2,9 @@ var BbPromise = require('bluebird');
 var bcrypt = require('bcrypt');
 var _ = require('lodash');
 var db = require('../config/bookshelf.config');
-var Task = require('./task');
 var Users = require('../collections/users');
 
+require('./task');
 
 var User = db.Model.extend({
 
@@ -22,15 +22,15 @@ var User = db.Model.extend({
   },
 
   tasks: function() {
-    return this.hasMany(Task);
+    return this.hasMany('Task');
   },
 
   monitoredTasks: function() {
-    return this.belongsToMany(Task);
+    return this.belongsToMany('Task', 'tasks_users', 'user_id', 'task_id');
   },
 
   friends: function() {
-    return this.belongsToMany(User, 'users_friends', 'user_id', 'friend_id');
+    return this.belongsToMany('User', 'users_friends', 'user_id', 'friend_id');
   },
 
   /**
@@ -145,4 +145,4 @@ var User = db.Model.extend({
 
 });
 
-module.exports = User;
+module.exports = db.model('User', User);

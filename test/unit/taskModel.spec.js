@@ -123,5 +123,75 @@ describe('Task Model', function() {
           done();
         });
     });
+    describe('Monitors', function() {
+
+      it('should add users as monitors for a task', function(done) {
+        Task.forge({
+            name: 'take names'
+          }).fetch()
+          .then(function(task) {
+            return task.updateRelations(savedUserIds, 'monitors');
+          }).then(function() {
+            return Task.forge({
+              name: 'take names'
+            }).fetch({
+              withRelated: ['monitors']
+            });
+          }).then(function(task) {
+            var monitors = task.related('monitors').models.map(function(user) {
+              return user.get('name');
+            });
+            expect(task.related('monitors').models.length).to.equal(2);
+            expect(monitors).to.have.members(['billy the kid', 'supertramp']);
+            done();
+          });
+      });
+
+      it('should remove users as monitors for a task', function(done) {
+        Task.forge({
+            name: 'take names'
+          }).fetch()
+          .then(function(task) {
+            return task.updateRelations(savedUserIds.slice(1), 'monitors');
+          }).then(function() {
+            return Task.forge({
+              name: 'take names'
+            }).fetch({
+              withRelated: ['monitors']
+            });
+          }).then(function(task) {
+            var monitors = task.related('monitors').models.map(function(user) {
+              return user.get('name');
+            });
+            expect(task.related('monitors').models.length).to.equal(1);
+            expect(monitors).to.have.members(['supertramp']);
+            expect(monitors).to.not.have.members(['billy the kid']);
+            done();
+          });
+      });
+
+      it('should display all tasks a user is monitoring', function(done) {
+        Task.forge({
+            name: 'take names'
+          }).fetch()
+          .then(function(task) {
+            return task.updateRelations(savedUserIds, 'monitors');
+          }).then(function() {
+            return User.forge({
+              name: 'supertramp'
+            }).fetch({
+              withRelated: ['monitoredTasks']
+            });
+          }).then(function(user) {
+            var monitored = user.related('monitoredTasks').models.map(function(task) {
+              return task.get('name');
+            });
+            expect(user.related('monitoredTasks').models.length).to.equal(1);
+            expect(monitored).to.have.members(['take names']);
+            done();
+          });
+      });
+
+    }); // end describe
   }); // end describe
 }); // end describe
