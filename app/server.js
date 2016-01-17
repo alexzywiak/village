@@ -1,8 +1,11 @@
-    var morgan = require('morgan'), // used for logging incoming request
-    bodyParser = require('body-parser'),
-    path       = require('path'),
+'use strict';
 
-    db = require('./config/db.config');
+var morgan = require('morgan'), // used for logging incoming request
+  bodyParser = require('body-parser'),
+  path = require('path'),
+
+  db = require('./config/db.config'),
+  sanitizer = require('./util/sanitizer');
 
 
 module.exports = function(app, express) {
@@ -15,6 +18,8 @@ module.exports = function(app, express) {
     extended: true
   }));
   app.use(bodyParser.json());
+
+  app.use(sanitizer());
 
   app.use(express.static(path.join(__dirname, '../public')));
 

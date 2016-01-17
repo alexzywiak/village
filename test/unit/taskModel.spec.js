@@ -1,3 +1,4 @@
+'use strict';
 process.env.NODE_ENV = 'test';
 
 var expect = require('chai').expect;
@@ -60,7 +61,7 @@ describe('Task Model', function() {
         return task.get('id');
       });
       done();
-    })
+    });
   });
 
   afterEach(function(done) {
@@ -123,6 +124,26 @@ describe('Task Model', function() {
           done();
         });
     });
+
+    describe('Sign Off', function(){
+
+      it('should let a user sign off on a task', function(done){
+        Task.forge({name: 'take names'}).fetch()
+          .then(function(task){
+            return task.save({
+              name: 'take names',
+              signed_off_by_user_id: savedUserIds[1]
+            });
+          }).then(function(task){
+            return Task.forge({id: task.get('id')}).fetch({withRelated: ['signOff']});
+          }).then(function(task){
+            expect(task.related('signOff').get('name')).to.equal('supertramp');
+            done();
+          });
+      });
+
+    });
+
     describe('Monitors', function() {
 
       it('should add users as monitors for a task', function(done) {

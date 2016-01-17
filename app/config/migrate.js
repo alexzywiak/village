@@ -1,3 +1,5 @@
+'use strict';
+
 /*
   Creates tables and fields based on schemas in schema.js
   ** Warning ** WILL DROP EXISTING TABLES

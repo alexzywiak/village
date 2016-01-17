@@ -11,9 +11,9 @@ var app = require('../../index');
 var db = require('../../app/config/bookshelf.config.js');
 var migrate = require('../../app/config/migrate');
 
-var User = require('../../app/models/user');
-var Users = require('../../app/collections/users');
 var Task = require('../../app/models/task');
+var Tasks = require('../../app/collections/users');
+var User = require('../../app/models/user');
 
 var tables = ['users', 'tasks', 'users_friends'];
 
@@ -28,13 +28,13 @@ var seedUsers = [{
 var seedTasks = [{
   name: 'take names',
 }, {
-  name: 'check bubblegum',
+  name: 'chew bubblegum',
 }];
 
 var savedUserIds;
 var savedTaskIds;
 
-describe('User Routes', function() {
+describe('Task Routes', function() {
 
   before(function(done) {
     // Creates tables for DB
@@ -80,64 +80,62 @@ describe('User Routes', function() {
       done();
     });
   });
-  
-  describe('GET api/user/', function(done) {
 
-    it('should respond with all current users', function(done) {
+  describe('GET api/task/', function(done) {
+
+    it('should respond with all current tasks', function(done) {
       request(app)
-        .get('/api/user')
+        .get('/api/task')
         .expect(200)
         .then(function(results) {
           var names = _.map(results.body, function(result) {
             return result.name;
           });
           expect(results.body.length).to.equal(2);
-          expect(names).to.have.members(['supertramp', 'billy the kid']);
+          expect(names).to.have.members(['take names', 'chew bubblegum']);
           done();
         });
     });
 
   }); // end describe
 
-  describe('GET api/user/:id', function() {
+  describe('GET api/task/:id', function() {
 
-    it('should get one user by id', function(done) {
+    it('should get one task by id', function(done) {
       request(app)
-        .get('/api/user/' + savedUserIds[0])
+        .get('/api/task/' + savedTaskIds[0])
         .expect(200)
         .then(function(result) {
-          expect(result.body.name).to.equal('billy the kid');
+          expect(result.body.name).to.equal('take names');
           done();
         });
     });
 
     it('should 404 for an id that does not exist', function(done) {
       request(app)
-        .get('/api/user/0')
+        .get('/api/task/0')
         .expect(404)
         .end(done);
     });
 
-    it('should return with all related tasks, friends, and monitored tasks', function(done) {
+    it('should return with related user and monitors', function(done) {
 
-      User.where({
-        id: savedUserIds[0]
-      }).fetch().then(function(user) {
-        // add a friend
-        return user.updateRelations([savedUserIds[1]], 'friends');
-      }).then(function(user) {
+      Task.where({
+        id: savedTaskIds[0]
+      }).fetch().then(function(task) {
         // add a monitored task
-        return user.monitoredTasks().attach(savedTaskIds[0]);
+        return task.monitors().attach(savedUserIds[0]);
       }).then(function() {
 
         request(app)
-          .get('/api/user/' + savedUserIds[0])
+          .get('/api/task/' + savedTaskIds[0])
           .expect(200)
           .then(function(res) {
-            var user = res.body;
-            expect(user.friends.length).to.equal(1);
-            expect(user.tasks.length).to.equal(2);
-            expect(user.monitoredTasks.length).to.equal(1);
+            var task = res.body;
+
+            expect(task.monitors.length).to.equal(1);
+            expect(task.monitors[0].name).to.equal('billy the kid');
+            expect(task.user.name).to.equal('billy the kid');
             done();
           });
       });
@@ -147,13 +145,12 @@ describe('User Routes', function() {
 
   describe('POST api/user', function() {
 
-    it('should save a new user', function(done) {
+    it('should save a new task', function(done) {
       request(app)
-        .post('/api/user')
+        .post('/api/task')
         .send({
           name: 'frank zappa',
-          password: 'moonunit',
-          email: 'yellowsnow@gmail.com'
+          user_id: savedUserIds[0]
         })
         .expect(201)
         .end(done);
@@ -161,21 +158,31 @@ describe('User Routes', function() {
 
     it('should 400 if missing information', function(done) {
       request(app)
-        .post('/api/user')
+        .post('/api/task')
         .send({
           name: 'frank zappa',
-          email: 'yellowsnow@gmail.com'
         })
         .expect(400)
         .end(done);
     });
+
+    it('should 404 if user_id does not exist', function(done) {
+      request(app)
+        .post('/api/task')
+        .send({
+          name: 'frank zappa',
+          user_id: 'fakestreet'
+        })
+        .expect(404)
+        .end(done);
+    });
   });
 
-  describe('PUT api/user/:id', function() {
+  describe('PUT api/task/:id', function() {
 
-    it('should update an existing user', function(done) {
+    it('should update an existing task', function(done) {
       request(app)
-        .put('/api/user/' + savedUserIds[0])
+        .put('/api/task/' + savedTaskIds[0])
         .send({
           name: 'frank zappa',
         })
@@ -186,66 +193,65 @@ describe('User Routes', function() {
         });
     });
 
-    it('should 404 if user does not exist', function(done) {
+    it('should 404 if task does not exist', function(done) {
       request(app)
-        .put('/api/user/0')
+        .put('/api/task/0')
         .send({
           name: 'frank zappa',
-          email: 'yellowsnow@gmail.com'
         })
         .expect(404)
         .end(done);
     });
 
-    it('should update with new friends', function(done) {
+    it('should update with new monitors', function(done) {
       request(app)
-        .put('/api/user/' + savedUserIds[0])
+        .put('/api/task/' + savedTaskIds[0])
         .send({
-          friends: [savedUserIds[1]]
+          monitors: [savedUserIds[1]]
         })
         .expect(200)
         .then(function(res) {
-          expect(res.body.name).to.equal('billy the kid');
+          expect(res.body.name).to.equal('take names');
 
-          User.where({
-              id: savedUserIds[0]
+          Task.where({
+              id: savedTaskIds[0]
             }).fetch({
-              withRelated: ['friends']
+              withRelated: ['monitors']
             })
-            .then(function(user) {
-              expect(user.related('friends').models.length).to.equal(1);
-              expect(user.related('friends').models[0].get('name')).to.equal('supertramp');
+            .then(function(task) {
+              expect(task.related('monitors').models.length).to.equal(1);
+              expect(task.related('monitors').models[0].get('name')).to.equal('supertramp');
               done();
             });
         });
     });
 
 
-    it('should update and remove friends', function(done) {
+    it('should update and remove monitors', function(done) {
 
       // Add initial friend
-      User.where({
-        id: savedUserIds[0]
+      Task.where({
+        id: savedTaskIds[0]
       }).fetch().then(function(user) {
-        return user.updateRelations(savedUserIds.slice(1), 'friends')
+        return user.updateRelations(savedUserIds.slice(1), 'monitors')
       }).then(function(user) {
 
         request(app)
-          .put('/api/user/' + savedUserIds[0])
+          .put('/api/task/' + savedTaskIds[0])
           .send({
-            friends: []
+            monitors: []
           })
           .expect(200)
           .then(function(res) {
-            expect(res.body.name).to.equal('billy the kid');
+            expect(res.body.name).to.equal('take names');
 
-            User.where({
-                id: savedUserIds[0]
+            Task.where({
+                id: savedTaskIds[0]
               }).fetch({
-                withRelated: ['friends']
+                withRelated: ['monitors']
               })
               .then(function(user) {
-                expect(user.related('friends').models.length).to.equal(0);
+                expect(user.related('monitors').models.length).to.equal(0);
                 done();
               });
           });
@@ -253,40 +259,17 @@ describe('User Routes', function() {
       });
     });
 
-    it('should update monitored tasks', function(done) {
-      request(app)
-        .put('/api/user/' + savedUserIds[0])
-        .send({
-          monitoredTasks: [savedTaskIds[0]]
-        })
-        .expect(200)
-        .then(function(res) {
-          expect(res.body.name).to.equal('billy the kid');
-
-          User.where({
-              id: savedUserIds[0]
-            }).fetch({
-              withRelated: ['monitoredTasks']
-            })
-            .then(function(user) {
-              expect(user.related('monitoredTasks').models.length).to.equal(1);
-              expect(user.related('monitoredTasks').models[0].get('name')).to.equal('take names');
-              done();
-            });
-        });
-    });
-
   }); // end describe
 
-  describe('DELETE api/user/:id', function() {
+  describe('DELETE api/task/:id', function() {
 
-    it('should delete an existing user', function(done) {
+    it('should delete an existing task', function(done) {
       request(app)
-        .delete('/api/user/' + savedUserIds[0])
+        .delete('/api/task/' + savedTaskIds[0])
         .expect(200)
         .then(function() {
-          return User.where({
-            id: savedUserIds[0]
+          return Task.where({
+            id: savedTaskIds[0]
           }).fetch().then(function(user) {
             expect(user).to.equal(null);
             done();
@@ -294,9 +277,9 @@ describe('User Routes', function() {
         });
     });
 
-    it('should 404 if a user does not exist', function(done) {
+    it('should 404 if a task does not exist', function(done) {
       request(app)
-        .delete('/api/user/0')
+        .delete('/api/task/0')
         .expect(404)
         .end(done);
     });

@@ -1,3 +1,4 @@
+'use strict';
 process.env.NODE_ENV = 'test';
 
 var expect = require('chai').expect;
@@ -159,81 +160,6 @@ describe('User Model', function() {
         done();
       });
     });
-
-    describe('executeUpdate method', function() {
-
-      it('should add friends', function(done) {
-        User.forge({
-          id: savedUserIds[0]
-        }).executeUpdate(savedUserIds.slice(1), 'friends', 'attach', true).then(function(results) {
-
-          expect(results.length).to.equal(2);
-
-          User.query('whereIn', 'id', savedUserIds)
-            .fetchAll({
-              withRelated: ['friends']
-            })
-            .then(function(results) {
-              var friends = results.models.map(function(user) {
-                return user.relations.friends.models.map(function(friend) {
-                  return friend.get('name');
-                });
-              });
-              expect(friends[0]).to.have.members(['supertramp', 'coolHandsLuke']);
-              expect(friends[1]).to.include('billy the kid');
-              expect(friends[2]).to.include('billy the kid');
-              done();
-            });
-        });
-
-      });
-
-      it('should not add the same friend twice', function(done) {
-        User.forge({
-          id: savedUserIds[0]
-        }).executeUpdate(savedUserIds.slice(1), 'friends', 'attach', true).then(function(friends) {
-          User.forge({
-            id: savedUserIds[0]
-          }).fetch({
-            withRelated: ['friends']
-          }).then(function(user) {
-            expect(user.relations.friends.models.length).to.equal(2);
-            done();
-          });
-        });
-      });
-
-      it('should remove friends', function(done) {
-
-        User.forge({
-          id: savedUserIds[0]
-        }).executeUpdate(savedUserIds.slice(1), 'friends', 'detach', true).then(function(friends) {
-          User.forge({
-            id: savedUserIds[0]
-          }).fetch({
-            withRelated: ['friends']
-          }).then(function(user) {
-            expect(user.relations.friends.models.length).to.equal(0);
-
-            User.query('whereIn', 'id', savedUserIds)
-              .fetchAll({
-                withRelated: ['friends']
-              })
-              .then(function(results) {
-                var friends = results.models.map(function(user) {
-                  return user.relations.friends.models.map(function(friend) {
-                    return friend.get('name');
-                  });
-                });
-                expect(friends[0]).to.not.include(['supertramp', 'coolHandsLuke']);
-                expect(friends[1]).to.not.include('billy the kid');
-                expect(friends[2]).to.not.include('billy the kid');
-                done();
-              });
-          });
-        });
-      });
-    }); // end describe
 
     describe('updateRelations Method', function() {
 
