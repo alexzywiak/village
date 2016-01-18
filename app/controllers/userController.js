@@ -16,6 +16,24 @@ var createToken = function(user) {
 
 module.exports = {
 
+  authorize: function(req, res, next) {
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    if (token) {
+      jwt.verify(token, secret, function(err, decoded) {
+        if (err) {
+          console.error(err);
+          return res.status(500).send('error authorizing token');
+        } else {
+          req.token = decoded;
+          return next();
+        }
+      });
+    } else {
+      console.error('not authorized');
+      return res.sendStatus(403);
+    }
+  },
+
   getAllUsers: function(req, res) {
     Users.forge().fetch().then(function(users) {
       res.status(200).send(users.models);

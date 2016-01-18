@@ -10,6 +10,7 @@ var _ = require('lodash');
 var app = require('../../index');
 var db = require('../../app/config/bookshelf.config.js');
 var migrate = require('../../app/config/migrate');
+var secret = require('../../app/config/auth.config').secret;
 
 var User = require('../../app/models/user');
 var Users = require('../../app/collections/users');
@@ -19,9 +20,11 @@ var tables = ['users', 'tasks', 'users_friends'];
 
 var seedUsers = [{
   name: 'billy the kid',
+  email: 'billythekid@gmail.com',
   password: 'makemyday'
 }, {
   name: 'supertramp',
+  email: 'supertramp@gmail.com',
   password: 'makemyday'
 }];
 
@@ -35,6 +38,9 @@ var savedUserIds;
 var savedTaskIds;
 
 describe('User Routes', function() {
+
+  // Auth token
+  var token
 
   before(function(done) {
     // Creates tables for DB
@@ -59,7 +65,18 @@ describe('User Routes', function() {
       savedTaskIds = _.map(tasks, function(task) {
         return task.get('id');
       });
-      done();
+
+      // Get access token for restricted routes
+      request(app)
+        .post('/api/user/login')
+        .send({
+          email: 'billythekid@gmail.com',
+          password: 'makemyday'
+        })
+        .end(function(err, res) {
+          token = res.body.id_token;
+          done();
+        });
     });
   });
 
@@ -80,7 +97,7 @@ describe('User Routes', function() {
       done();
     });
   });
-  
+
   describe('GET api/user/', function(done) {
 
     it('should respond with all current users', function(done) {
@@ -104,9 +121,10 @@ describe('User Routes', function() {
     it('should get one user by id', function(done) {
       request(app)
         .get('/api/user/' + savedUserIds[0])
+        .set('x-access-token', token)
         .expect(200)
-        .then(function(result) {
-          expect(result.body.name).to.equal('billy the kid');
+        .end(function(err, res) {
+          expect(res.body.name).to.equal('billy the kid');
           done();
         });
     });
@@ -114,8 +132,8 @@ describe('User Routes', function() {
     it('should 404 for an id that does not exist', function(done) {
       request(app)
         .get('/api/user/0')
-        .expect(404)
-        .end(done);
+        .set('x-access-token', token)
+        .expect(404, done);
     });
 
     it('should return with all related tasks, friends, and monitored tasks', function(done) {
@@ -132,8 +150,9 @@ describe('User Routes', function() {
 
         request(app)
           .get('/api/user/' + savedUserIds[0])
+          .set('x-access-token', token)
           .expect(200)
-          .then(function(res) {
+          .end(function(err, res) {
             var user = res.body;
             expect(user.friends.length).to.equal(1);
             expect(user.tasks.length).to.equal(2);
@@ -149,7 +168,7 @@ describe('User Routes', function() {
 
     it('should save a new user', function(done) {
       request(app)
-        .post('/api/user')
+        .post('/api/user/signup')
         .send({
           name: 'frank zappa',
           password: 'moonunit',
@@ -161,7 +180,7 @@ describe('User Routes', function() {
 
     it('should 400 if missing information', function(done) {
       request(app)
-        .post('/api/user')
+        .post('/api/user/signup')
         .send({
           name: 'frank zappa',
           email: 'yellowsnow@gmail.com'

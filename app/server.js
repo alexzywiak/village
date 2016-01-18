@@ -1,11 +1,12 @@
 'use strict';
 
-var morgan = require('morgan'), // used for logging incoming request
-  bodyParser = require('body-parser'),
-  path = require('path'),
+var morgan = require('morgan'); // used for logging incoming request
+var bodyParser = require('body-parser');
+var path = require('path');
 
-  db = require('./config/db.config'),
-  sanitizer = require('./util/sanitizer');
+var db = require('./config/db.config');
+var sanitizer = require('./util/sanitizer');
+var secret = require('./config/auth.config').secret;
 
 
 module.exports = function(app, express) {

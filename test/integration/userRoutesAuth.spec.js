@@ -77,7 +77,7 @@ describe('User Model', function() {
 
     it('should sign up a new user and return a JWT', function(done) {
       request(app)
-        .post('/api/user')
+        .post('/api/user/signup')
         .send({
           email: 'abc123@gmail.com',
           password: 'abc123'
@@ -92,7 +92,7 @@ describe('User Model', function() {
 
     it('should sign not sign up a user with an existing email', function(done) {
       request(app)
-        .post('/api/user')
+        .post('/api/user/signup')
         .send({
           email: 'billythekid@gmail.com',
           password: 'abc123'
