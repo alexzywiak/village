@@ -119,17 +119,23 @@ describe('User Model', function() {
     });
 
     it('should return the user object when comparing a valid password', function(done) {
-      User.comparePassword('supertramp', 'makemyday')
-        .then(function(user) {
-          expect(user.name).to.equal('supertramp');
+      User.where({id: savedUserIds[0]}).fetch()
+        .then(function(user){
+          return user.comparePassword('makemyday');
+        })
+        .then(function(authorized){
+          expect(authorized).to.equal(true);
           done();
         });
     });
 
     it('should return false comparing an invalid password', function(done) {
-      User.comparePassword('supertramp', 'fakestreet')
-        .then(function(user) {
-          expect(user).to.equal(false);
+      User.where({id: savedUserIds[0]}).fetch()
+        .then(function(user){
+          return user.comparePassword('funkymonkey');
+        })
+        .then(function(authorized){
+          expect(authorized).to.equal(false);
           done();
         });
     });

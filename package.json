@@ -18,6 +18,8 @@
     "body-parser": "^1.14.2",
     "bookshelf": "^0.9.1",
     "express": "^4.13.3",
+    "express-jwt": "^3.3.0",
+    "jsonwebtoken": "^5.5.4",
     "knex": "^0.9.0",
     "lodash": "^4.0.0",
     "morgan": "^1.6.1",

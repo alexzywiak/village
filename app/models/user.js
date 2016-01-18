@@ -28,6 +28,10 @@ var User = db.Model.extend({
     return this.hasMany('Task');
   },
 
+  signedOffTasks: function(){
+    return this.hasMany('Task', 'signed_off_by_user_id');
+  },
+
   monitoredTasks: function() {
     return this.belongsToMany('Task', 'tasks_users', 'user_id', 'task_id');
   },
@@ -36,7 +40,28 @@ var User = db.Model.extend({
     return this.belongsToMany('User', 'users_friends', 'user_id', 'friend_id');
   },
 
-  // Many to Many relationships on the same table
+  /**
+   * Compares passed name and password to the name and corresponding hashed password on the DB
+   * Resolves true on successful comparison, false on unsuccessful
+   * @param  {[string]} password [password to compare]
+   * @return {[Promise]}         [resolves true or false]
+   */
+  comparePassword: function(password){
+    return new BbPromise(function(resolve, reject){
+      bcrypt.compare(password, this.get('password'), function(err, match){
+        if(err){
+          reject(err);
+        }
+        if(match){
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      });
+    }.bind(this));
+  },
+
+  // Specify Many to Many relationships on the same table
   // Will create reciprocal entries for a --> b and b --> a
   mutualRelationships: ['friends'],
 
@@ -50,41 +75,6 @@ var User = db.Model.extend({
    * @return {[promise]}             [resolves with current user]
    */
   updateRelations: updateRelations('User')
-
-}, {
-
-  /**
-   * Compares passed name and password to the name and corresponding hashed password
-   * on the DB
-   * Resolves user on successful comparison, false on unsuccessful
-   * @param  {[string]} name     [name of the user]
-   * @param  {[string]} password [password to compare]
-   * @return {[Promise]}         [resolves with user or false]
-   */
-  comparePassword: function(name, password) {
-
-    return new BbPromise(function(resolve, reject) {
-      if (!name || !password) throw new Error('Name and password are required, dude!');
-      new this({
-        name: name
-      }).fetch({
-        required: true
-      }).then(function(user) {
-
-        bcrypt.compare(password, user.get('password'), function(err, isMatch) {
-
-          if (err) {
-            reject(err);
-          }
-          if (isMatch) {
-            resolve(user.omit('password'));
-          } else {
-            resolve(false);
-          }
-        });
-      });
-    }.bind(this));
-  }
 
 });
 

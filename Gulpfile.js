@@ -19,6 +19,18 @@ gulp.task('test', function() {
     });
 });
 
+gulp.task('test-one', function() {
+  return gulp.src('test/integration/userRoutesAuth.spec.js')
+    .pipe(mocha())
+    .once('error', function(err) {
+      console.log(err);
+      process.exit(1);
+    })
+    .once('end', function() {
+      process.exit();
+    });
+});
+
 gulp.task('hint', function() {
   return gulp.src(paths.app)
     .pipe(jshint())

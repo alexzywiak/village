@@ -80,17 +80,23 @@ module.exports = function(app) {
       .then(function(task) {
 
         return task.save({
-
+          // Update name and description
           name: req.body.name || task.get('name'),
           description: req.body.description || task.get('description'),
-          status: req.body.status || task.get('status'),
-
+          status: (req.body.status === 'pending') ? 'pending' : this.get('status')
         });
 
       }).then(function(task) {
-
+        // Check for update to monitors array
         if (req.body.monitors) {
           return task.updateRelations(req.body.monitors, 'monitors');
+        } else {
+          return task;
+        }
+      }).then(function(task){
+        // Check for update to sign off status
+        if (req.body.signOff) {
+          return task.signOff(req.body.signOff);
         } else {
           return task;
         }

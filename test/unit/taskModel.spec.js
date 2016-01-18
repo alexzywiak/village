@@ -130,14 +130,32 @@ describe('Task Model', function() {
       it('should let a user sign off on a task', function(done){
         Task.forge({name: 'take names'}).fetch()
           .then(function(task){
-            return task.save({
-              name: 'take names',
-              signed_off_by_user_id: savedUserIds[1]
-            });
+            return task.signOff(savedUserIds[1])
           }).then(function(task){
-            return Task.forge({id: task.get('id')}).fetch({withRelated: ['signOff']});
+            return Task.forge({id: task.get('id')}).fetch({withRelated: ['signedOffBy']});
           }).then(function(task){
-            expect(task.related('signOff').get('name')).to.equal('supertramp');
+            expect(task.get('status')).to.equal('complete');
+            expect(task.related('signedOffBy').get('name')).to.equal('supertramp');
+            return User.where({id: savedUserIds[1]}).fetch({withRelated: ['signedOffTasks']});
+          }).then(function(user){
+            expect(user.related('signedOffTasks').models.length).to.equal(1);
+            done();
+          });
+      });
+
+      it('should not let a user sign off his own task', function(done){
+        Task.forge({name: 'take names'}).fetch()
+          .then(function(task){
+            return task.signOff(savedUserIds[0]);
+          }).catch(function(err){
+            expect(err).to.equal('cannot sign off your own tasks!');
+            return Task.forge({name: 'take names'}).fetch({withRelated: ['signedOffBy']});
+          }).then(function(task){
+            expect(task.get('status')).to.equal('incomplete');
+            expect(task.related('signedOffBy').attributes).to.eql({});
+            return User.where({id: savedUserIds[0]}).fetch({withRelated: ['signedOffTasks']});
+          }).then(function(user){
+            expect(user.related('signedOffTasks').models.length).to.equal(0);
             done();
           });
       });

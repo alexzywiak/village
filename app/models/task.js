@@ -16,8 +16,26 @@ var Task = db.Model.extend({
     return this.belongsToMany('User', 'tasks_users', 'task_id', 'user_id');
   },
 
-  signOff: function(){
+  signedOffBy: function() {
     return this.belongsTo('User', 'signed_off_by_user_id');
+  },
+
+  signOff: function(userId) {
+
+    var task = this;
+
+    if (userId === this.get('user_id')) {
+      return BbPromise.reject('cannot sign off your own tasks!');
+    }
+
+    return db.model('User').where({
+        id: userId
+      }).fetch({
+        require: true
+      })
+      .then(function() {
+        return task.save({status: 'complete', signed_off_by_user_id: userId});
+      });
   },
 
   user: function() {
