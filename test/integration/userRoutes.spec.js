@@ -195,6 +195,7 @@ describe('User Routes', function() {
     it('should update an existing user', function(done) {
       request(app)
         .put('/api/user/' + savedUserIds[0])
+        .set('x-access-token', token)
         .send({
           name: 'frank zappa',
         })
@@ -208,6 +209,7 @@ describe('User Routes', function() {
     it('should 404 if user does not exist', function(done) {
       request(app)
         .put('/api/user/0')
+        .set('x-access-token', token)
         .send({
           name: 'frank zappa',
           email: 'yellowsnow@gmail.com'
@@ -219,6 +221,7 @@ describe('User Routes', function() {
     it('should update with new friends', function(done) {
       request(app)
         .put('/api/user/' + savedUserIds[0])
+        .set('x-access-token', token)
         .send({
           friends: [savedUserIds[1]]
         })
@@ -251,6 +254,7 @@ describe('User Routes', function() {
 
         request(app)
           .put('/api/user/' + savedUserIds[0])
+          .set('x-access-token', token)
           .send({
             friends: []
           })
@@ -275,6 +279,7 @@ describe('User Routes', function() {
     it('should update monitored tasks', function(done) {
       request(app)
         .put('/api/user/' + savedUserIds[0])
+        .set('x-access-token', token)
         .send({
           monitoredTasks: [savedTaskIds[0]]
         })
@@ -302,6 +307,7 @@ describe('User Routes', function() {
     it('should delete an existing user', function(done) {
       request(app)
         .delete('/api/user/' + savedUserIds[0])
+        .set('x-access-token', token)
         .expect(200)
         .then(function() {
           return User.where({
@@ -316,6 +322,7 @@ describe('User Routes', function() {
     it('should 404 if a user does not exist', function(done) {
       request(app)
         .delete('/api/user/0')
+        .set('x-access-token', token)
         .expect(404)
         .end(done);
     });

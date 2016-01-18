@@ -36,6 +36,8 @@ var savedUserIds;
 
 describe('User Model', function() {
 
+  var token;
+
   before(function(done) {
     // Creates tables for DB
     migrate().then(function() {
@@ -113,7 +115,7 @@ describe('User Model', function() {
           password: 'makemyday'
         })
         .expect(200)
-        .then(function(res){
+        .then(function(res) {
           expect(jwt.verify(res.body.id_token, secret).email).to.equal('billythekid@gmail.com');
           expect(jwt.verify(res.body.id_token, secret).password).to.equal(undefined);
           done();
@@ -129,6 +131,40 @@ describe('User Model', function() {
         })
         .expect(403)
         .end(done);
+    });
+
+  });
+
+  describe('Authorization', function() {
+    var token;
+
+    beforeEach(function(done) {
+      request(app)
+        .post('/api/user/login')
+        .send({
+          email: 'billythekid@gmail.com',
+          password: 'makemyday'
+        })
+        .expect(200)
+        .end(function(err, res) {
+          if (err) console.error(err);
+          token = res.body.id_token;
+          done();
+        });
+    });
+
+    it('should allow users into restricted routes with a valid jwt', function(done){
+      request(app)
+        .get('/api/user/' + savedUserIds[0])
+        .set('x-access-token', token)
+        .expect(200, done);
+    });
+
+    it('should not allow users into restricted routes without a valid jwt', function(done){
+      request(app)
+        .get('/api/user/' + savedUserIds[0])
+        .set('x-access-token', 'fake')
+        .expect(403, done);
     });
 
   });

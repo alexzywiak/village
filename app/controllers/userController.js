@@ -1,38 +1,14 @@
 'use strict';
 
-var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 
 var Users = require('../collections/users');
 var User = require('../models/user');
+var auth = require('./authController');
 
 var secret = require('../config/auth.config').secret;
 
-var createToken = function(user) {
-  return jwt.sign(_.omit(user.attributes, 'password'), secret, {
-    expiresIn: 24 * 60 * 60
-  });
-};
-
 module.exports = {
-
-  authorize: function(req, res, next) {
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
-    if (token) {
-      jwt.verify(token, secret, function(err, decoded) {
-        if (err) {
-          console.error(err);
-          return res.status(500).send('error authorizing token');
-        } else {
-          req.token = decoded;
-          return next();
-        }
-      });
-    } else {
-      console.error('not authorized');
-      return res.sendStatus(403);
-    }
-  },
 
   getAllUsers: function(req, res) {
     Users.forge().fetch().then(function(users) {
@@ -75,7 +51,7 @@ module.exports = {
         .then(function(authorized) {
           if (authorized) {
             res.status(200).send({
-              id_token: createToken(user)
+              id_token: auth.createToken(user)
             })
           } else {
             res.sendStatus(403)
@@ -112,7 +88,7 @@ module.exports = {
               .save()
               .then(function(user) {
                 res.status(201).send({
-                  id_token: createToken(user)
+                  id_token: auth.createToken(user)
                 });
               })
               .catch(function(err) {

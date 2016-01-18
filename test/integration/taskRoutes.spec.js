@@ -19,6 +19,7 @@ var tables = ['users', 'tasks', 'users_friends'];
 
 var seedUsers = [{
   name: 'billy the kid',
+  email: 'billythekid@gmail.com',
   password: 'makemyday'
 }, {
   name: 'supertramp',
@@ -35,6 +36,8 @@ var savedUserIds;
 var savedTaskIds;
 
 describe('Task Routes', function() {
+
+  var token;
 
   before(function(done) {
     // Creates tables for DB
@@ -59,7 +62,17 @@ describe('Task Routes', function() {
       savedTaskIds = _.map(tasks, function(task) {
         return task.get('id');
       });
-      done();
+      // Get access token for restricted routes
+      request(app)
+        .post('/api/user/login')
+        .send({
+          email: 'billythekid@gmail.com',
+          password: 'makemyday'
+        })
+        .end(function(err, res) {
+          token = res.body.id_token;
+          done();
+        });
     });
   });
 
@@ -86,12 +99,13 @@ describe('Task Routes', function() {
     it('should respond with all current tasks', function(done) {
       request(app)
         .get('/api/task')
+        .set('x-access-token', token)
         .expect(200)
-        .then(function(results) {
-          var names = _.map(results.body, function(result) {
+        .end(function(err, res) {
+          var names = _.map(res.body, function(result) {
             return result.name;
           });
-          expect(results.body.length).to.equal(2);
+          expect(res.body.length).to.equal(2);
           expect(names).to.have.members(['take names', 'chew bubblegum']);
           done();
         });
@@ -104,9 +118,10 @@ describe('Task Routes', function() {
     it('should get one task by id', function(done) {
       request(app)
         .get('/api/task/' + savedTaskIds[0])
+        .set('x-access-token', token)
         .expect(200)
-        .then(function(result) {
-          expect(result.body.name).to.equal('take names');
+        .end(function(err, res) {
+          expect(res.body.name).to.equal('take names');
           done();
         });
     });
@@ -114,6 +129,7 @@ describe('Task Routes', function() {
     it('should 404 for an id that does not exist', function(done) {
       request(app)
         .get('/api/task/0')
+        .set('x-access-token', token)
         .expect(404)
         .end(done);
     });
@@ -129,10 +145,10 @@ describe('Task Routes', function() {
 
         request(app)
           .get('/api/task/' + savedTaskIds[0])
+          .set('x-access-token', token)
           .expect(200)
-          .then(function(res) {
+          .end(function(err, res) {
             var task = res.body;
-
             expect(task.monitors.length).to.equal(1);
             expect(task.monitors[0].name).to.equal('billy the kid');
             expect(task.user.name).to.equal('billy the kid');
@@ -143,11 +159,12 @@ describe('Task Routes', function() {
 
   }); // end describe
 
-  describe('POST api/user', function() {
+  describe('POST api/task', function() {
 
     it('should save a new task', function(done) {
       request(app)
         .post('/api/task')
+        .set('x-access-token', token)
         .send({
           name: 'frank zappa',
           user_id: savedUserIds[0]
@@ -159,6 +176,7 @@ describe('Task Routes', function() {
     it('should 400 if missing information', function(done) {
       request(app)
         .post('/api/task')
+        .set('x-access-token', token)
         .send({
           name: 'frank zappa',
         })
@@ -169,6 +187,7 @@ describe('Task Routes', function() {
     it('should 404 if user_id does not exist', function(done) {
       request(app)
         .post('/api/task')
+        .set('x-access-token', token)
         .send({
           name: 'frank zappa',
           user_id: 'fakestreet'
@@ -183,11 +202,12 @@ describe('Task Routes', function() {
     it('should update an existing task', function(done) {
       request(app)
         .put('/api/task/' + savedTaskIds[0])
+        .set('x-access-token', token)
         .send({
           name: 'frank zappa',
         })
         .expect(200)
-        .then(function(res) {
+        .end(function(err, res) {
           expect(res.body.name).to.equal('frank zappa');
           done();
         });
@@ -196,6 +216,7 @@ describe('Task Routes', function() {
     it('should 404 if task does not exist', function(done) {
       request(app)
         .put('/api/task/0')
+        .set('x-access-token', token)
         .send({
           name: 'frank zappa',
         })
@@ -206,11 +227,12 @@ describe('Task Routes', function() {
     it('should update with new monitors', function(done) {
       request(app)
         .put('/api/task/' + savedTaskIds[0])
+        .set('x-access-token', token)
         .send({
           monitors: [savedUserIds[1]]
         })
         .expect(200)
-        .then(function(res) {
+        .end(function(err, res) {
           expect(res.body.name).to.equal('take names');
 
           Task.where({
@@ -238,11 +260,12 @@ describe('Task Routes', function() {
 
         request(app)
           .put('/api/task/' + savedTaskIds[0])
+          .set('x-access-token', token)
           .send({
             monitors: []
           })
           .expect(200)
-          .then(function(res) {
+          .end(function(err, res) {
             expect(res.body.name).to.equal('take names');
 
             Task.where({
@@ -266,8 +289,9 @@ describe('Task Routes', function() {
     it('should delete an existing task', function(done) {
       request(app)
         .delete('/api/task/' + savedTaskIds[0])
+        .set('x-access-token', token)
         .expect(200)
-        .then(function() {
+        .end(function(err, res) {
           return Task.where({
             id: savedTaskIds[0]
           }).fetch().then(function(user) {
@@ -280,6 +304,7 @@ describe('Task Routes', function() {
     it('should 404 if a task does not exist', function(done) {
       request(app)
         .delete('/api/task/0')
+        .set('x-access-token', token)
         .expect(404)
         .end(done);
     });
