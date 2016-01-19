@@ -28,7 +28,7 @@ module.exports = function(app, express) {
   // Escape HTML
   app.use(sanitizer());
 
-  app.use(express.static(path.join(__dirname, '../public')));
+  app.use(express.static(path.join(__dirname, '../dist')));
 
   app.use('/api/user', userRouter);
   app.use('/api/task', taskRouter);

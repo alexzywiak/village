@@ -8,7 +8,7 @@ export const <%= name %> = angular.module('<%= name %>', [uiRouter])
     $stateProvider.state('<%= name %>', {
       url: '/<%= name %>',
       template: '<<%- name %>></<%- name %>>'
-    })
+    });
   })
   .directive('<%= name %>', <%= name %>Directive);
 

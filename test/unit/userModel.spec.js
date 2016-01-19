@@ -5,11 +5,11 @@ var expect = require('chai').expect;
 var BbPromise = require('bluebird');
 var _ = require('lodash');
 
-var db = require('../../app/config/bookshelf.config.js');
-var migrate = require('../../app/config/migrate');
+var db = require('../../server/config/bookshelf.config.js');
+var migrate = require('../../server/config/migrate');
 
-var User = require('../../app/models/user');
-var Users = require('../../app/collections/users');
+var User = require('../../server/models/user');
+var Users = require('../../server/collections/users');
 
 var tables = ['users', 'tasks', 'users_friends'];
 

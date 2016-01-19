@@ -1,25 +1,27 @@
 
 var path = {
 	client: 'client/app',
-	server: 'app',
+	server: 'server',
 	templates: this.client + '/templates/**/*.*',
-	js: ['app/**/*.js', 'test/**/*.js', this.client + '**/*.js'],
+	js: ['server/**/*.js', 'test/**/*.js', 'client/**/*.js'],
 	dist: 'dist'
 };
 
 module.exports = {
+	base: path.dist,
 	clean: ['dist/'],
 	component: {
-		src: path.client + '/components',
-		templates: path.client + '/templates/component/*.**'
+		src: 'client/app/components',
+		templates: 'client/app/templates/component/*.**'
 	},
 	copy: {
-		toCopy: ['client/index.html', path.client + '/**/*.html', '!client/app/templates/**/*.*'],
+		toCopy: ['client/index.html','client/app/**/*.html', '!client/app/templates/**/*.*'],
 		base: 'client',
 		dest: path.dist
 	},
+	js: path.js,
 	jshint: {
-		src: path.js.concat(['!app/config/schema.js', '!client/app/templates/**/*.*'])
+		src: path.js.concat(['!server/config/schema.js', '!client/app/templates/**/*.*'])
 	},
 	mocha: {
 		src: ['test/**/*.js']
@@ -28,7 +30,7 @@ module.exports = {
 		src: path.js
 	},
 	webpack: {
-		entry: path.client + '/app.js',
+		entry: 'client/app/app.js',
 		dest: path.dist
 	}
 };

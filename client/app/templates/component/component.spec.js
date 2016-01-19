@@ -1,4 +1,4 @@
-import {<%= name %>} from './<%= name %>'
+import {<%= name %>} from './<%= name %>';
 import {<%= upCaseName %>Controller} from './<%= name %>.controller';
 import {<%= name %>directive} from './<%= name %>.directive';
 import template from './<%= name %>.html';

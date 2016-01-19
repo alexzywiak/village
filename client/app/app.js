@@ -5,12 +5,11 @@ import angular from 'angular';
 import uiRouter from 'angular-ui-router';
 import ngAnimate from 'angular-animate';
 
-import {test} from './components/test/test';
+import {appDirective} from './app.directive';
 
 angular.module('app', [
   uiRouter,
-  ngAnimate,
-  test.name
+  ngAnimate
 ])
-.directive('app', appDirective)
-.config()
+.directive('app', appDirective);
+//.config()

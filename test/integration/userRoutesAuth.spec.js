@@ -11,12 +11,12 @@ var _ = require('lodash');
 var jwt = require('jsonwebtoken');
 
 var app = require('../../index');
-var db = require('../../app/config/bookshelf.config.js');
-var migrate = require('../../app/config/migrate');
-var secret = require('../../app/config/auth.config').secret;
+var db = require('../../server/config/bookshelf.config.js');
+var migrate = require('../../server/config/migrate');
+var secret = require('../../server/config/auth.config').secret;
 
-var User = require('../../app/models/user');
-var Users = require('../../app/collections/users');
+var User = require('../../server/models/user');
+var Users = require('../../server/collections/users');
 
 var tables = ['users', 'tasks', 'users_friends'];
 

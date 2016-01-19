@@ -10,12 +10,12 @@ var BbPromise = require('bluebird');
 var _ = require('lodash');
 
 var app = require('../../index');
-var db = require('../../app/config/bookshelf.config.js');
-var migrate = require('../../app/config/migrate');
+var db = require('../../server/config/bookshelf.config.js');
+var migrate = require('../../server/config/migrate');
 
-var Task = require('../../app/models/task');
-var Tasks = require('../../app/collections/users');
-var User = require('../../app/models/user');
+var Task = require('../../server/models/task');
+var Tasks = require('../../server/collections/users');
+var User = require('../../server/models/user');
 
 var tables = ['users', 'tasks', 'users_friends'];
 
