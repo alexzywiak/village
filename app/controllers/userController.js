@@ -1,3 +1,4 @@
+/*jslint node: true */
 'use strict';
 
 var _ = require('lodash');
@@ -52,9 +53,9 @@ module.exports = {
           if (authorized) {
             res.status(200).send({
               id_token: auth.createToken(user)
-            })
+            });
           } else {
-            res.sendStatus(403)
+            res.sendStatus(403);
           }
         })
         .catch(function(err) {

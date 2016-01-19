@@ -1,4 +1,6 @@
+/*jslint node: true */
 'use strict';
+
 process.env.NODE_ENV = 'test';
 
 var expect = require('chai').expect;
@@ -35,7 +37,7 @@ var seed = [{
 var savedUserIds;
 
 describe('User Model', function() {
-
+  
   var token;
 
   before(function(done) {

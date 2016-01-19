@@ -1,3 +1,4 @@
+/*jslint node: true */
 'use strict';
 
 /**
@@ -7,9 +8,8 @@
 var sanitizer = require('sanitize-html'),
   _ = require('lodash');
 
-var before;
-
 module.exports = function(config, errors) {
+
   return function(req, res, next) {
     if (req.body) {
       _.each(req.body, function(value, key) {

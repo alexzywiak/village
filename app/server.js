@@ -1,3 +1,4 @@
+/*jslint node: true */
 'use strict';
 
 var morgan = require('morgan'); // used for logging incoming request

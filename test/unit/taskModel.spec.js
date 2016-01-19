@@ -1,4 +1,4 @@
-'use strict';
+
 process.env.NODE_ENV = 'test';
 
 var expect = require('chai').expect;
@@ -37,6 +37,8 @@ var savedTaskIds;
 
 describe('Task Model', function() {
 
+  'use strict';
+
   before(function(done) {
     // Creates tables for DB
     migrate().then(function() {
@@ -55,7 +57,7 @@ describe('Task Model', function() {
       return BbPromise.map(seedTasks, function(task) {
         task.user_id = savedUserIds[0];
         return new Task(task).save();
-      })
+      });
     }).then(function(tasks) {
       savedTaskIds = _.map(tasks, function(task) {
         return task.get('id');
@@ -130,7 +132,7 @@ describe('Task Model', function() {
       it('should let a user sign off on a task', function(done){
         Task.forge({name: 'take names'}).fetch()
           .then(function(task){
-            return task.signOff(savedUserIds[1])
+            return task.signOff(savedUserIds[1]);
           }).then(function(task){
             return Task.forge({id: task.get('id')}).fetch({withRelated: ['signedOffBy']});
           }).then(function(task){

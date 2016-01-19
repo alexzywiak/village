@@ -1,3 +1,5 @@
+/*jslint node: true */
+
 'use strict';
 process.env.NODE_ENV = 'test';
 
@@ -57,7 +59,7 @@ describe('Task Routes', function() {
       return BbPromise.map(seedTasks, function(task) {
         task.user_id = savedUserIds[0];
         return new Task(task).save();
-      })
+      });
     }).then(function(tasks) {
       savedTaskIds = _.map(tasks, function(task) {
         return task.get('id');
@@ -255,7 +257,7 @@ describe('Task Routes', function() {
       Task.where({
         id: savedTaskIds[0]
       }).fetch().then(function(user) {
-        return user.updateRelations(savedUserIds.slice(1), 'monitors')
+        return user.updateRelations(savedUserIds.slice(1), 'monitors');
       }).then(function(user) {
 
         request(app)

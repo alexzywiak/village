@@ -1,3 +1,6 @@
+/*jslint node: true */
+'use strict';
+
 var Tasks = require('../collections/tasks');
 var Task = require('../models/task');
 var User = require('../models/user');
@@ -37,7 +40,7 @@ module.exports = {
         }).fetch({
           require: true
         })
-        .then(function(user) {
+        .then(function() {
 
           // Create new task
           new Task({

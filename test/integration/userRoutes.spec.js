@@ -1,4 +1,6 @@
+/*jslint node: true */
 'use strict';
+
 process.env.NODE_ENV = 'test';
 
 var expect = require('chai').expect;
@@ -40,7 +42,7 @@ var savedTaskIds;
 describe('User Routes', function() {
 
   // Auth token
-  var token
+  var token;
 
   before(function(done) {
     // Creates tables for DB
@@ -60,7 +62,7 @@ describe('User Routes', function() {
       return BbPromise.map(seedTasks, function(task) {
         task.user_id = savedUserIds[0];
         return new Task(task).save();
-      })
+      });
     }).then(function(tasks) {
       savedTaskIds = _.map(tasks, function(task) {
         return task.get('id');
@@ -249,7 +251,7 @@ describe('User Routes', function() {
       User.where({
         id: savedUserIds[0]
       }).fetch().then(function(user) {
-        return user.updateRelations(savedUserIds.slice(1), 'friends')
+        return user.updateRelations(savedUserIds.slice(1), 'friends');
       }).then(function(user) {
 
         request(app)

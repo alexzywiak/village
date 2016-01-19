@@ -1,13 +1,10 @@
-'use strict';
+
 process.env.NODE_ENV = 'test';
 
 var expect = require('chai').expect;
-var request = require('supertest');
-var express = require('express');
 var BbPromise = require('bluebird');
 var _ = require('lodash');
 
-var app = require('../../index');
 var db = require('../../app/config/bookshelf.config.js');
 var migrate = require('../../app/config/migrate');
 
@@ -30,7 +27,9 @@ var seed = [{
 var savedUserIds;
 
 describe('User Model', function() {
-
+  
+  'use strict';
+  
   before(function(done) {
     // Creates tables for DB
     migrate().then(function() {
@@ -91,7 +90,7 @@ describe('User Model', function() {
     }).then(function() {
       return User.forge({
         id: savedUserIds[0]
-      }).fetch()
+      }).fetch();
     }).then(function(user) {
       expect(user.get('name')).to.equal('rock the casbah');
       done();

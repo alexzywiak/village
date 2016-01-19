@@ -1,3 +1,4 @@
+/*jslint node: true */
 'use strict';
 
 var knex = require('knex')(require('./db.config'));
