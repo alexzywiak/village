@@ -12,4 +12,5 @@ angular.module('app', [
   ngAnimate,
   test.name
 ])
-.directive('app', appDirective);
+.directive('app', appDirective)
+.config()

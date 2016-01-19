@@ -16,5 +16,5 @@ requireDir('./gulp/tasks', {
 });
 
 gulp.task('default', function(done) {
-  sync('jshint', 'webpack', done);
+  sync('jshint', 'clean', 'copy', 'webpack', done);
 });
