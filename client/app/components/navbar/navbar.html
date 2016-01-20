@@ -4,7 +4,7 @@
             <span>Ra Ra Rasputin</span>
             <!-- fill up the space between left and right area -->
             <span flex></span>
-            <a  ng-repeat="link in vm.links" ui-sref="{{link.state}}">
+            <a  ng-repeat="link in vm.links" ui-sref="{{link.state || '#'}}" ng-click="vm.handleClick(link.click)">
                 <md-button>
                     {{link.title}}
                 </md-button>

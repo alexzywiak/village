@@ -1,5 +1,5 @@
 
-export const users = ($http, $q, $window, Auth, API) => {
+export const users = ($http, $q, $window, $state, Auth, API) => {
 	
 	let allUsers = [];
 	let currentUser = null;
@@ -62,7 +62,7 @@ export const users = ($http, $q, $window, Auth, API) => {
 			data: data
 		}).then((resp) => {
 			if(resp.data.id_token){
-				let user = Auth.saveToken(res.data.id_token);
+				let user = Auth.saveToken(resp.data.id_token);
 				return getById(user.id);
 			} else {
 				return $q.when(false);
@@ -89,8 +89,10 @@ export const users = ($http, $q, $window, Auth, API) => {
 				return currentUser;
 			});
 
-		} else {
+		} else if (Auth.authorized()){
 			return $q.when(currentUser);
+		} else {
+			return $q.when(false);
 		}
 	};
 
@@ -122,4 +124,4 @@ export const users = ($http, $q, $window, Auth, API) => {
   return {getLoggedInUser, signUp, login, addTask};
 };
 
-users.$inject = ['$http', '$q', '$window', 'Auth', 'API'];
+users.$inject = ['$http', '$q', '$window', '$state', 'Auth', 'API'];

@@ -1,12 +1,25 @@
 
 class DashboardController {
-  constructor(Users) {
+  constructor($state, Users, Auth) {
+
+    // Add dependencies
+    this.$state = $state;
   	this.Users = Users;
-    this.greeting = 'DashboardController!';
+    this.Auth = Auth;
+
+    // Initialize newTask
     this.newTask = {
     	dueDate: new Date()
     };
- 		this.Users.getLoggedInUser().then(user => this.user = user);
+
+    // Initialize current user
+    // Redirect to login if not authorized
+ 		if(this.Auth.authorized()){
+      this.Users.getLoggedInUser()
+        .then(user => this.user = user);
+    } else {
+      this.$state.go('login');
+    }
   }
 
   addTask(task) {
@@ -21,6 +34,6 @@ class DashboardController {
 
 }
 
-DashboardController.$inject = ['Users'];
+DashboardController.$inject = ['$state', 'Users', 'Auth'];
 
 export {DashboardController};
