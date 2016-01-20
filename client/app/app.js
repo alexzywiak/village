@@ -4,29 +4,31 @@ import '../../node_modules/angular-material/angular-material.css';
 import {appDirective} from './app.directive';
 
 // Angular Dependencies
-import angular from 'angular';
-import uiRouter from 'angular-ui-router';
-import ngAnimate from 'angular-animate';
-import 'angular-aria';
+import angular    from 'angular';
+import uiRouter   from 'angular-ui-router';
+import ngAnimate  from 'angular-animate';
+import ngAria     from'angular-aria';
 import ngMaterial from 'angular-material';
 
 // JWT Dependencies
-import angularJwt from 'angular-jwt';
+import angularJwt     from 'angular-jwt';
 import angularStorage from 'angular-storage';
+
 
 // Import shared services
 import {services} from './services/services';
 
 // Import components
-import {signup} from './components/signup/signup';
-import {login} from './components/login/login';
+import {signup}    from './components/signup/signup';
+import {login}     from './components/login/login';
 import {dashboard} from './components/dashboard/dashboard';
-import {navbar} from './components/navbar/navbar';
+import {navbar}    from './components/navbar/navbar';
 
 angular.module('app', [
   uiRouter,
   ngAnimate,
   ngMaterial,
+
   angularJwt,
   angularStorage,
   

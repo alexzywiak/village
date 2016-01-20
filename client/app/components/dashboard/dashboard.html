@@ -15,6 +15,7 @@
 	    		    <label>Task Name</label>
 	    		    <input ng-model="vm.newTask.name" type="text">
 	    		</md-input-container>
+	    		
 	    		<div layout="column">
 	    			<md-input-container>
 	    		    <label>Task Description</label>
@@ -25,11 +26,13 @@
 	    				<md-button ng-click="vm.addTask(vm.newTask)" class="md-primary">Add Task</md-button>
 	    			</div>
 	    		</div>
+
 				</div>
         <md-list>
-            <md-list-item ng-repeat="task in vm.user.tasks">
-                {{ task.name }}
-            </md-list-item>
+        	<md-list-item ng-repeat="task in vm.tasks">
+				    <md-checkbox class="md-secondary" ng-checked="task.status === 'pending'" ng-click="vm.checkTask(task)"></md-checkbox>
+				    <p> {{ task.name }} </p>
+				  </md-list-item>
         </md-list>
     </md-content>
 

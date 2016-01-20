@@ -96,32 +96,32 @@ export const users = ($http, $q, $window, $state, Auth, API) => {
 		}
 	};
 
-	/**
-	 * Saves a new task to the logged in user
-	 * data requires {name, [description, due date]}
-	 * @param  {[obj]} data [task data]
-	 * @return {[promise]}  [resolves on completion]
-	 */
-	let addTask = (data) => {
-    return getLoggedInUser()
-      .then((user) => {
-      	data.user_id = user.id;
-      	if(user){
-	        return $http({
-	          method: "POST",
-	          url: `${API.url}/task`,
-	          data: data
-	        }).then((resp) => {
-	        	currentUser.tasks.push(resp.data);
-	        	return resp.data;
-	        });
-      	} else {
-      		return $q.when(false);
-      	}
-      });
-  }
+	// /**
+	//  * Saves a new task to the logged in user
+	//  * data requires {name, [description, due date]}
+	//  * @param  {[obj]} data [task data]
+	//  * @return {[promise]}  [resolves on completion]
+	//  */
+	// let addTask = (data) => {
+ //    return getLoggedInUser()
+ //      .then((user) => {
+ //      	data.user_id = user.id;
+ //      	if(user){
+	//         return $http({
+	//           method: "POST",
+	//           url: `${API.url}/task`,
+	//           data: data
+	//         }).then((resp) => {
+	//         	currentUser.tasks.push(resp.data);
+	//         	return resp.data;
+	//         });
+ //      	} else {
+ //      		return $q.when(false);
+ //      	}
+ //      });
+  //}
 
-  return {getLoggedInUser, signUp, login, addTask};
+  return {getLoggedInUser, signUp, login};
 };
 
 users.$inject = ['$http', '$q', '$window', '$state', 'Auth', 'API'];

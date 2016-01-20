@@ -53,6 +53,10 @@ module.exports = {
             })
             .save()
             .then(function(task) {
+              return Task.where({
+                id: task.id
+              }).fetch();
+            }).then(function(task){
               res.status(201).send(task);
             })
             .catch(function(err) {
