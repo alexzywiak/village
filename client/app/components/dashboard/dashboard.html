@@ -11,7 +11,12 @@
     <md-content flex id="content" layout="column" layout-padding>
         <h2>{{vm.user.name || vm.user.email}}</h2>
 				<div layout="column">
-					<md-input-container>
+					
+					<!-- to taskinput component -->
+					
+					<taskinput model="vm.newTask" handle-submit="vm.addTask(task)"></taskinput>
+
+					<!-- <md-input-container>
 	    		    <label>Task Name</label>
 	    		    <input ng-model="vm.newTask.name" type="text">
 	    		</md-input-container>
@@ -25,7 +30,7 @@
 	    				<md-datepicker ng-model="vm.newTask.dueDate"></md-datepicker>
 	    				<md-button ng-click="vm.addTask(vm.newTask)" class="md-primary">Add Task</md-button>
 	    			</div>
-	    		</div>
+	    		</div> -->
 
 				</div>
         <md-list>

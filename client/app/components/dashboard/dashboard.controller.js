@@ -1,5 +1,6 @@
 
 class DashboardController {
+  
   constructor($state, Users, Tasks, Auth) {
 
     // Add dependencies
@@ -7,11 +8,6 @@ class DashboardController {
   	this.Users = Users;
     this.Tasks = Tasks;
     this.Auth = Auth;
-
-    // Initialize newTask
-    this.newTask = {
-    	dueDate: new Date()
-    };
 
     // Initialize current user
     // Redirect to login if not authorized
@@ -28,7 +24,7 @@ class DashboardController {
   }
 
   addTask(task) {
-  	
+  	console.log(task);
     this.Tasks.addTask(task)
       .then(tasks => this.tasks = tasks);
     

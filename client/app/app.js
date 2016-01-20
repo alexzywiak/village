@@ -14,7 +14,6 @@ import ngMaterial from 'angular-material';
 import angularJwt     from 'angular-jwt';
 import angularStorage from 'angular-storage';
 
-
 // Import shared services
 import {services} from './services/services';
 
@@ -23,6 +22,7 @@ import {signup}    from './components/signup/signup';
 import {login}     from './components/login/login';
 import {dashboard} from './components/dashboard/dashboard';
 import {navbar}    from './components/navbar/navbar';
+import {taskinput} from './components/taskinput/taskinput';
 
 angular.module('app', [
   uiRouter,
@@ -37,7 +37,8 @@ angular.module('app', [
   signup.name,
   login.name,
   dashboard.name,
-  navbar.name
+  navbar.name,
+  taskinput.name
 
 ])
 .directive('app', appDirective)
