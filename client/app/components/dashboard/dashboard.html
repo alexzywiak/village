@@ -1,3 +1,36 @@
-<section class="dashboard">
-  <h1>Hey from {{ vm.greeting }}</h1>
-</section>
+<div flex layout="row">
+    
+    <md-sidenav flex md-is-locked-open="true" md-component-id="left" class="md-whiteframe-2dp">
+        <md-list>
+            <md-list-item ng-repeat="friend in vm.user.friends">
+                {{ friend.name || friend.email }}
+            </md-list-item>
+        </md-list>
+    </md-sidenav>
+
+    <md-content flex id="content" layout="column" layout-padding>
+        <h2>{{vm.user.name || vm.user.email}}</h2>
+				<div layout="column">
+					<md-input-container>
+	    		    <label>Task Name</label>
+	    		    <input ng-model="vm.newTask.name" type="text">
+	    		</md-input-container>
+	    		<div layout="column">
+	    			<md-input-container>
+	    		    <label>Task Description</label>
+	    		    <input ng-model="vm.newTask.description" type="text">
+	    			</md-input-container>
+	    			<div layout="row" layout-align="space-between">
+	    				<md-datepicker ng-model="vm.newTask.dueDate"></md-datepicker>
+	    				<md-button ng-click="vm.addTask(vm.newTask)" class="md-primary">Add Task</md-button>
+	    			</div>
+	    		</div>
+				</div>
+        <md-list>
+            <md-list-item ng-repeat="task in vm.user.tasks">
+                {{ task.name }}
+            </md-list-item>
+        </md-list>
+    </md-content>
+
+</div>

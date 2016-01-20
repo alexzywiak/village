@@ -30,6 +30,7 @@ gulp.task('default', function(done) {
 */
 
 var gulp    = require('gulp');
+var mocha   = require('gulp-mocha');
 var sync    = require('run-sequence');
 var browser = require('browser-sync');
 var webpack = require('webpack-stream');
@@ -50,7 +51,8 @@ var paths = {
   toCopy: ['client/index.html'],
   html: ['client/index.html', 'client/app/**/*.html'],
   dest: 'dist',
-  blankTemplates: 'client/app/templates/component/*.**'
+  blankTemplates: 'client/app/templates/component/*.**',
+  test: ['test/**/*.spec.js']
 };
 
 // helper funciton
@@ -58,6 +60,18 @@ var resolveToComponents = function(glob){
   glob = glob || '';
   return path.join('client', 'app/components', glob); // app/components/{glob}
 };
+
+gulp.task('mocha-test', function() {
+  return gulp.src(paths.test)
+    .pipe(mocha())
+    .once('error', function(err) {
+      console.log(err);
+      process.exit(1);
+    })
+    .once('end', function() {
+      process.exit();
+    });
+});
 
 gulp.task('todo', function() {
   return gulp.src(paths.js)

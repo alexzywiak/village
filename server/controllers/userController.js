@@ -25,6 +25,7 @@ module.exports = {
         withRelated: ['friends', 'tasks', 'monitoredTasks']
       })
       .then(function(user) {
+        user.unset('password')
         res.status(200).send(user);
       })
       .catch(function(err) {

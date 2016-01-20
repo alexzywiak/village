@@ -4,6 +4,7 @@
 var morgan = require('morgan'); // used for logging incoming request
 var bodyParser = require('body-parser');
 var path = require('path');
+var cors = require('cors');
 
 var db = require('./config/db.config');
 var sanitizer = require('./util/sanitizer');
@@ -15,8 +16,15 @@ module.exports = function(app, express) {
   var userRouter = express.Router();
   var taskRouter = express.Router();
 
-  if(process.env.NODE_ENV === 'development'){
+  if(process.env.NODE_ENV === 'dev'){
     app.use(morgan('dev'));
+  }
+
+  if(process.env.NODE_ENV === 'dev'){
+    app.options('*', cors());
+    app.use(cors({
+      origin: 'http://localhost:4500'
+    }));
   }
 
   app.use(bodyParser.urlencoded({

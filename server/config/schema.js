@@ -15,6 +15,7 @@ var Schema = {
     user_id: {type: 'integer', nullable: false, unsigned: true},
     signed_off_by_user_id: {type: 'integer', nullable: false, unsigned: true},
     status: {type: 'string', maxlength: 254, nullable: false, defaultTo:'incomplete'},
+    due_date: {type: 'dateTime', nullable: true},
     name: {type: 'string', maxlength: 150, nullable: false},
     description: {type: 'string', maxlength: 150, nullable: true},
     created_at: {type: 'dateTime', nullable: false},

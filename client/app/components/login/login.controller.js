@@ -1,16 +1,21 @@
 
 class LoginController {
-  constructor() {
-    this.greeting = 'LoginController!';
+  constructor($state, Users) {
+    this.$state = $state;
+  	this.Users = Users;
     this.user = {};
   }
 
-  signUp(user) {
-  	console.log(user);
+  login(user) {
+  	this.Users.login(user)
+  		.then((auth) => {
+  			if(auth){
+          this.$state.go('dashboard');
+        }
+  		});	
   }
-
 }
 
-LoginController.$inject = [];
+LoginController.$inject = ['$state', 'Users'];
 
 export {LoginController};

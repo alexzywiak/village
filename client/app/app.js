@@ -41,7 +41,6 @@ angular.module('app', [
 .directive('app', appDirective)
 
 // Set up JWT authentication
-
 .config(['$httpProvider', '$stateProvider', '$urlRouterProvider', '$mdThemingProvider', function($httpProvider, $stateProvider, $urlRouterProvider, $mdThemingProvider){
 	
 	$mdThemingProvider.theme('default')

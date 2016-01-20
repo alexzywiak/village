@@ -1,9 +1,9 @@
 
 import {loginDirective} from './login.directive';
 import angular from 'angular';
-//import uiRouter from 'angular-ui-router';
+import uiRouter from 'angular-ui-router';
 
-export const login = angular.module('login', ['ui.router'])
+export const login = angular.module('login', [uiRouter])
   .config(($stateProvider) => {
     $stateProvider.state('login', {
       url: '/login',

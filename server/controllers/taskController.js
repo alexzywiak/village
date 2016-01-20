@@ -47,7 +47,8 @@ module.exports = {
 
               name: req.body.name,
               user_id: req.body.user_id,
-              description: req.body.description
+              description: req.body.description,
+              due_date: req.body.due_date
 
             })
             .save()
