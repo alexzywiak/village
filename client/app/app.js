@@ -6,8 +6,9 @@ import {appDirective} from './app.directive';
 // Angular Dependencies
 import angular    from 'angular';
 import uiRouter   from 'angular-ui-router';
+import ngFx				from 'ng-fx';
 import ngAnimate  from 'angular-animate';
-import ngAria     from'angular-aria';
+import ngAria     from 'angular-aria';
 import ngMaterial from 'angular-material';
 
 // JWT Dependencies
@@ -18,14 +19,17 @@ import angularStorage from 'angular-storage';
 import {services} from './services/services';
 
 // Import components
-import {signup}    from './components/signup/signup';
-import {login}     from './components/login/login';
-import {dashboard} from './components/dashboard/dashboard';
-import {navbar}    from './components/navbar/navbar';
-import {taskinput} from './components/taskinput/taskinput';
+import {signup}     from './components/signup/signup';
+import {login}      from './components/login/login';
+import {dashboard}  from './components/dashboard/dashboard';
+import {navbar}     from './components/navbar/navbar';
+import {taskinput}  from './components/taskinput/taskinput';
+import {tasklist}   from './components/tasklist/tasklist';
+import {friendlist} from './components/friendlist/friendlist';
 
 angular.module('app', [
   uiRouter,
+  ngFx,
   ngAnimate,
   ngMaterial,
 
@@ -38,7 +42,9 @@ angular.module('app', [
   login.name,
   dashboard.name,
   navbar.name,
-  taskinput.name
+  taskinput.name,
+  tasklist.name,
+  friendlist.name
 
 ])
 .directive('app', appDirective)

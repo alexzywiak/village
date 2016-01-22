@@ -33,9 +33,6 @@ module.exports = function(app, express) {
 
   app.use(bodyParser.json());
 
-  // Escape HTML
-  app.use(sanitizer());
-
   app.use(express.static(path.join(__dirname, '../dist')));
 
   app.use('/api/user', userRouter);

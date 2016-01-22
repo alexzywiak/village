@@ -1,13 +1,13 @@
 
 class LoginController {
-  constructor($state, Users) {
+  constructor($state, Auth) {
     this.$state = $state;
-  	this.Users = Users;
+  	this.Auth = Auth;
     this.user = {};
   }
 
   login(user) {
-  	this.Users.login(user)
+  	this.Auth.login(user)
   		.then((auth) => {
   			if(auth){
           this.$state.go('dashboard');
@@ -16,6 +16,6 @@ class LoginController {
   }
 }
 
-LoginController.$inject = ['$state', 'Users'];
+LoginController.$inject = ['$state', 'Auth'];
 
 export {LoginController};

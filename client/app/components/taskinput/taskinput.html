@@ -1,16 +1,20 @@
-<div>
-	<md-input-container>
-	    <label>Task Name</label>
-	    <input ng-model="vm.task.name" type="text">
-	</md-input-container>
-	<div layout="column">
-	    <md-input-container>
+<div layout="column">
+	<div layout="row" layout-align="space-around">
+		<md-input-container flex="60">
+		    <label>Task Name</label>
+		    <input ng-model="vm.task.name" type="text">
+		</md-input-container>
+		<div flex="30" layout="column" layout-align="center">
+			<md-button ng-click="vm.onSubmit()" class="md-accent md-fab">+</md-button>
+		</div>
+	</div>
+	<div ng-show="vm.task.name.length" layout="column" class="fx-zoom-normal fx-speed-500">
+	    <md-input-container flex>
 	        <label>Task Description</label>
 	        <input ng-model="vm.task.description" type="text">
 	    </md-input-container>
-	    <div layout="row" layout-align="space-between">
+	    <div layout="row">
 	        <md-datepicker ng-model="vm.task.dueDate"></md-datepicker>
-	        <md-button ng-click="vm.onSubmit()" class="md-primary">Add Task</md-button>
 	    </div>
 	</div>
 </div>

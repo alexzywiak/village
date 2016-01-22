@@ -85,7 +85,7 @@ module.exports = {
           // Update name and description
           name: req.body.name || task.get('name'),
           description: req.body.description || task.get('description'),
-          status: (req.body.status === 'pending') ? 'pending' : this.get('status')
+          status: req.body.status || this.get('status')
         });
 
       }).then(function(task) {

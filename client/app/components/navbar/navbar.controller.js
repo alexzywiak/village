@@ -6,7 +6,7 @@ class NavbarController {
 
     this.links = [{
       title: 'dashboard',
-      state: 'dashboard'
+      state: 'dashboard({userId: null})'
     }, {
     	title: 'login',
     	state: 'login'
@@ -20,7 +20,7 @@ class NavbarController {
   }
 
   logout() {
-    this.Auth.removeToken();
+    this.Auth.logout();
     this.$state.go('login');
   }
 

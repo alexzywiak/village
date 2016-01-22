@@ -8,12 +8,14 @@ export const taskinputDirective = () => {
     controller,
     controllerAs: 'vm',
     scope: {
-    	handleSubmit: '&'
+    	user: '=',
+        handleUpdate: '&'
     },
     restrict: 'E',
     replace: true,
     link: (scope, element, attrs, controller) => {
-    	scope.vm.handleSubmit = scope.handleSubmit;
+    	scope.vm.user = scope.user;
+        scope.vm.handleUpdate = scope.handleUpdate;
     }
   };
 };

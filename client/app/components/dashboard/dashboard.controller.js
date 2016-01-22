@@ -1,40 +1,58 @@
 
 class DashboardController {
   
-  constructor($state, Users, Tasks, Auth) {
+  constructor($scope, $state, $stateParams, Users, Tasks, Auth) {
 
     // Add dependencies
+    this.$scope = $scope;
     this.$state = $state;
   	this.Users = Users;
     this.Tasks = Tasks;
     this.Auth = Auth;
 
+    this.user;
+    this.isLoggedInUser = false;
+
+    this.$scope.$watch('vm', (vm) => {
+      console.log('change');
+      this.user = vm.user;
+    });
+
     // Initialize current user
     // Redirect to login if not authorized
  		if(this.Auth.authorized()){
-      this.Users.getLoggedInUser()
-        .then((user) => {
-          this.user = user
-          return this.Tasks.getTasks();
-        })
-        .then(tasks => this.tasks = tasks);
+      // Get logged in user
+      this.Auth.getLoggedInUser()
+        .then((loggedInUser) => {
+          // If viewing another user
+          if($stateParams.userId && $stateParams.userId !== loggedInUser.id){
+
+            this.Users.getCurrentUser($stateParams.userId)
+              .then((user) => {
+                this.user = user;
+              });
+          // Default to logged in user
+          } else {
+            this.isLoggedInUser = true;
+            this.user = loggedInUser;
+          }
+        });
+    // Unauthorized gets the boot
     } else {
-      this.$state.go('login');
+      this.redirect();
     }
+  }
+
+  redirect(){
+    this.$state.go('login');
   }
 
   addTask(task) {
-  	console.log(task);
     this.Tasks.addTask(task)
       .then(tasks => this.tasks = tasks);
-    
-    this.newTask = {
-      dueDate: new Date()
-    }
   }
 
   checkTask(task) {
-    task.status = 'pending';
     this.updateTask(task);
   }
 
@@ -43,8 +61,13 @@ class DashboardController {
       .then(tasks => this.tasks = tasks);
   }
 
+  updateUser() {
+    this.Users.update(this.user)
+      .then(user => this.user = user);
+  }
+
 }
 
-DashboardController.$inject = ['$state', 'Users', 'Tasks', 'Auth'];
+DashboardController.$inject = ['$scope', '$state', '$stateParams', 'Users', 'Tasks', 'Auth'];
 
 export {DashboardController};

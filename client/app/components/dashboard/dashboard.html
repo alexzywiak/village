@@ -1,44 +1,15 @@
 <div flex layout="row">
-    
     <md-sidenav flex md-is-locked-open="true" md-component-id="left" class="md-whiteframe-2dp">
-        <md-list>
-            <md-list-item ng-repeat="friend in vm.user.friends">
-                {{ friend.name || friend.email }}
-            </md-list-item>
-        </md-list>
-    </md-sidenav>
+        
+        <friendlist user="vm.user" handle-update="vm.updateUser()"></friendlist>
 
+    </md-sidenav>
     <md-content flex id="content" layout="column" layout-padding>
         <h2>{{vm.user.name || vm.user.email}}</h2>
-				<div layout="column">
-					
-					<!-- to taskinput component -->
-					
-					<taskinput model="vm.newTask" handle-submit="vm.addTask(task)"></taskinput>
 
-					<!-- <md-input-container>
-	    		    <label>Task Name</label>
-	    		    <input ng-model="vm.newTask.name" type="text">
-	    		</md-input-container>
-	    		
-	    		<div layout="column">
-	    			<md-input-container>
-	    		    <label>Task Description</label>
-	    		    <input ng-model="vm.newTask.description" type="text">
-	    			</md-input-container>
-	    			<div layout="row" layout-align="space-between">
-	    				<md-datepicker ng-model="vm.newTask.dueDate"></md-datepicker>
-	    				<md-button ng-click="vm.addTask(vm.newTask)" class="md-primary">Add Task</md-button>
-	    			</div>
-	    		</div> -->
+				<taskinput flex user="vm.user" handle-update="vm.updateUser()"></taskinput>
 
-				</div>
-        <md-list>
-        	<md-list-item ng-repeat="task in vm.tasks">
-				    <md-checkbox class="md-secondary" ng-checked="task.status === 'pending'" ng-click="vm.checkTask(task)"></md-checkbox>
-				    <p> {{ task.name }} </p>
-				  </md-list-item>
-        </md-list>
+        <tasklist user="vm.user" handle-update="vm.updateUser()"></tasklist>
+        
     </md-content>
-
 </div>

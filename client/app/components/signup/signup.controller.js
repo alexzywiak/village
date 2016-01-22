@@ -1,13 +1,13 @@
 
 class SignupController {
-  constructor(Users, $state) {
+  constructor(Auth, $state) {
   	this.user = {};
     this.greeting = 'SignupController!';
-    this.Users = Users;
+    this.Auth = Auth;
   }
 
   signUp(user){
-  	this.Users.signUp(user)
+  	this.Auth.signUp(user)
   		.then((auth) => {
         if(auth){
           this.$state.go('dashboard');
@@ -16,6 +16,6 @@ class SignupController {
   }
 }
 
-SignupController.$inject = ['Users', '$state'];
+SignupController.$inject = ['Auth', '$state'];
 
 export {SignupController};

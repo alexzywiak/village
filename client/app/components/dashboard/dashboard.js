@@ -6,7 +6,10 @@ import uiRouter from 'angular-ui-router';
 export const dashboard = angular.module('dashboard', [uiRouter])
   .config(($stateProvider) => {
     $stateProvider.state('dashboard', {
-      url: '/dashboard',
+      url: '/dashboard/',
+      params: {
+      	userId: null
+      },
       template: '<dashboard></dashboard>',
       authenticate: true
     });

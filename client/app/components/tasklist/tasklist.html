@@ -1,0 +1,23 @@
+<md-list class="smooth-transition">
+    <md-list-item ng-repeat="item in vm.user.tasks | orderBy : 'status'" class="md-2-line">
+        <div layout="row" flex>
+        	<div layout="column" flex="30">
+        		
+        		<md-icon ng-if="item.status === 'incomplete'" md-font-set="material-icons" class="md-warn check-circle">highlight_off</md-icon>
+        		
+        		<md-icon ng-if="item.status === 'pending'" md-font-set="material-icons" class="md-primary check-circle">help_outline</md-icon>
+        		
+        		<md-icon ng-if="item.status === 'completed'" md-font-set="material-icons" class="md-accent check-circle">check_circle</md-icon>
+        	
+        	</div>
+      		<div flex="60"  class="md-list-item-text" layout="column">
+      		    <h3 class="md-title">{{item.name}}</h3>
+      		  	<p class="md-subhead">{{item.description}}</p>
+      		</div>
+        	<div flex="10" layout="row" layout-align="center">
+        		<md-checkbox ng-checked="item.status === 'pending'" ng-click="vm.onUpdate(item)">
+        		</md-checkbox>
+        	</div>
+        </div>
+    </md-list-item>
+</md-list>

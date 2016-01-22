@@ -103,7 +103,7 @@ module.exports = {
   },
 
   updateUser: function(req, res) {
-
+    console.log(req.body);
     User.where({
         id: req.params.id
       })
@@ -131,6 +131,9 @@ module.exports = {
           return user;
         }
       }).then(function(user) {
+        return User.where({id: user.id})
+          .fetch({withRelated: ['tasks', 'friends']});
+      }).then(function(user){
         res.status(200).send(user);
       }).catch(function(err) {
         console.error(err);

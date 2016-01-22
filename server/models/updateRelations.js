@@ -62,6 +62,12 @@ module.exports = function(model) {
 
     var self = this;
 
+    if(typeof updateIdArray[0] === 'object'){
+      updateIdArray = updateIdArray.map(function(item){
+        return item.id;
+      });
+    }
+
     // For many to many relationships on the same table.  Will manage both a --> b and b --> a entries
     var mutual = (this.mutualRelationships) ? _.includes(this.mutualRelationships, relation) : false;
 
