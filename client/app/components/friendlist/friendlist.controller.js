@@ -3,6 +3,7 @@ class FriendlistController {
 
     this.$scope = $scope;
     this.Users = Users;
+    this.Auth = Auth;
 
     this.userList = [];
     this.user;
@@ -21,6 +22,7 @@ class FriendlistController {
 
   addFriend(friend) {
     this.user.friends.push(friend);
+    console.log(this.user);
     this.handleUpdate();
   }
 

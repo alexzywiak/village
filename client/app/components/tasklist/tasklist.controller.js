@@ -1,10 +1,11 @@
 import moment from 'moment';
 
 class TasklistController {
-	constructor($scope, Tasks) {
+	constructor($scope, Tasks, Auth) {
 		
 		this.$scope = $scope;
-		this.Tasks  = Tasks
+		this.Tasks  = Tasks;
+		this.Auth = Auth;
 		this.moment = moment;
 
 		this.showDetail = {};
@@ -16,12 +17,28 @@ class TasklistController {
 	}
 
   onUpdate(task){
-  	task.status = (task.status === 'pending') ? 'incomplete' : 'pending';
-  	this.Tasks.updateTask(task);
+  	task = this.changeTaskStatus(task);
+  	if(task){
+	  	this.Tasks.updateTask(task);
+  	}
+  }
+
+  changeTaskStatus(task) {
+  	// Check if it's user's own profile
+  	if(this.Auth.isLoggedInUser(this.user) && task.status !== 'complete'){
+	  	task.status = (task.status === 'pending') ? 'incomplete' : 'pending';
+	  	return task;
+  	// Friends Profile
+  	} else if(task.status !== 'incomplete'){
+  		task.status = (task.status === 'pending') ? 'complete' : 'pending';
+  		return task;
+  	} else {
+  		return false;
+  	}
   }
 
 }
 
-TasklistController.$inject = ['$scope', 'Tasks'];
+TasklistController.$inject = ['$scope', 'Tasks', 'Auth'];
 
 export {TasklistController};

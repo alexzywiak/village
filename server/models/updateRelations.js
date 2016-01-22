@@ -26,7 +26,7 @@ module.exports = function(model) {
    */
 
   var executeUpdate = function(idArray, relation, method, mutual) {
-
+    console.log(idArray, this.id, method);
     var Model = Bookshelf.model(model);
 
     var id = this.get('id');
@@ -71,17 +71,20 @@ module.exports = function(model) {
     // For many to many relationships on the same table.  Will manage both a --> b and b --> a entries
     var mutual = (this.mutualRelationships) ? _.includes(this.mutualRelationships, relation) : false;
 
-    return Model.forge(self.get('id')).fetch({
+    return Model.forge({id: self.get('id')}).fetch({
       withRelated: [relation]
     }).then(function(results) {
-
+      console.log('results', results);
       var currentIdArray = results.related(relation).models.map(function(model) {
         return model.get('id');
       });
 
+      console.log('current friends', currentIdArray);
+      console.log('update friends', updateIdArray);
+
       // Get all ids in updateIdArray not in currentIdArray
       // and prepare to add them
-      var toAdd = executeUpdate.bind(this,
+      var toAdd = executeUpdate.bind(self,
         _.difference(updateIdArray, currentIdArray),
         relation,
         'attach',
@@ -89,7 +92,7 @@ module.exports = function(model) {
 
       // Get all ids in currentIdArray not in updateIdArray
       // and prepare to remove them
-      var toRemove = executeUpdate.bind(this,
+      var toRemove = executeUpdate.bind(self,
         _.difference(currentIdArray, updateIdArray),
         relation,
         'detach',

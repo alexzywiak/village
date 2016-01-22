@@ -7,7 +7,7 @@
         		
         		<md-icon ng-if="item.status === 'pending'" md-font-set="material-icons" class="md-primary check-circle">help_outline</md-icon>
         		
-        		<md-icon ng-if="item.status === 'completed'" md-font-set="material-icons" class="md-accent check-circle">check_circle</md-icon>
+        		<md-icon ng-if="item.status === 'complete'" md-font-set="material-icons" class="md-accent check-circle">check_circle</md-icon>
         	
         	</div>
       		<div flex="60"  class="md-list-item-text" layout="column">
@@ -15,7 +15,7 @@
       		  	<p class="md-subhead">{{item.description}}</p>
       		</div>
         	<div flex="10" layout="row" layout-align="center">
-        		<md-checkbox ng-checked="item.status === 'pending'" ng-click="vm.onUpdate(item)">
+        		<md-checkbox ng-checked="item.status === 'pending' || item.status === 'complete'" ng-click="vm.onUpdate(item)">
         		</md-checkbox>
         	</div>
         </div>

@@ -7,9 +7,9 @@
     <md-content flex id="content" layout="column" layout-padding>
         <h2>{{vm.user.name || vm.user.email}}</h2>
 
-				<taskinput flex user="vm.user" handle-update="vm.updateUser()"></taskinput>
+				<taskinput ng-if="vm.Auth.isLoggedInUser(vm.user)" flex user="vm.user" handle-update="vm.updateUser()"></taskinput>
 
-        <tasklist user="vm.user" handle-update="vm.updateUser()"></tasklist>
+        <tasklist user="vm.user"></tasklist>
         
     </md-content>
 </div>

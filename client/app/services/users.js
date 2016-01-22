@@ -52,6 +52,7 @@ export const users = ($http, $q, $window, $state, Auth, API) => {
   };
 
   const update = (data) => {
+    console.log('update');
     return $http({
       method: "PUT",
       url: `${API.url}/user/${data.id}`,

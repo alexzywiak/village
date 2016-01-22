@@ -20,7 +20,7 @@ class NavbarController {
   }
 
   logout() {
-    this.Auth.logout();
+    this.Auth.logOut();
     this.$state.go('login');
   }
 

@@ -13,11 +13,6 @@ class DashboardController {
     this.user;
     this.isLoggedInUser = false;
 
-    this.$scope.$watch('vm', (vm) => {
-      console.log('change');
-      this.user = vm.user;
-    });
-
     // Initialize current user
     // Redirect to login if not authorized
  		if(this.Auth.authorized()){
@@ -62,8 +57,9 @@ class DashboardController {
   }
 
   updateUser() {
-    this.Users.update(this.user)
-      .then(user => this.user = user);
+    console.log(this.user);
+    this.Users.update(this.user);
+      // .then(user => this.user = user);
   }
 
 }

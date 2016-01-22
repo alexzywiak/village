@@ -9,9 +9,8 @@ class LoginController {
   login(user) {
   	this.Auth.login(user)
   		.then((auth) => {
-  			if(auth){
-          this.$state.go('dashboard');
-        }
+        console.log(auth);
+        this.$state.go('dashboard');
   		});	
   }
 }

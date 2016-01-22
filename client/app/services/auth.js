@@ -88,7 +88,7 @@ export const auth = ($http, $q, $window, jwtHelper, API) => {
    * @return {[boolean]}  [true if is logged in user]
    */
   const isLoggedInUser = (user) => {
-    return (authorized() && user.id === loggedInUser.id) ? true : false;
+    return (authorized() && user && user.id === loggedInUser.id) ? true : false;
   };
 
   /**
@@ -118,18 +118,22 @@ export const auth = ($http, $q, $window, jwtHelper, API) => {
    * @return {[promise]}  [gets current user from db]
    */
   const login = (data) => {
+    console.log(data);
     return $http({
       method: "POST",
       url: `${API.url}/user/login`,
       data: data
     }).then((resp) => {
       if (resp.data.id_token) {
+        saveToken(resp.data.id_token);
         return getLoggedInUser();
       } else {
         return $q.when(false);
       }
     });
   };
+
+  getLoggedInUser();
 
   return {authorized, logOut, getLoggedInUser, isLoggedInUser, login, signUp};
 };

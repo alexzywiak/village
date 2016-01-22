@@ -103,7 +103,7 @@ module.exports = {
   },
 
   updateUser: function(req, res) {
-    console.log(req.body);
+
     User.where({
         id: req.params.id
       })
@@ -119,13 +119,14 @@ module.exports = {
         });
 
       }).then(function(user) {
-        if (req.body.friends) {
+        
+        if (req.body.monitoredTasks && req.body.friends.length) {
           return user.updateRelations(req.body.friends, 'friends');
         } else {
           return user;
         }
       }).then(function(user) {
-        if (req.body.monitoredTasks) {
+        if (req.body.monitoredTasks && req.body.monitoredTasks.length) {
           return user.updateRelations(req.body.monitoredTasks, 'monitoredTasks');
         } else {
           return user;

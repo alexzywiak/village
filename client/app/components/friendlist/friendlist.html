@@ -1,17 +1,19 @@
 
 <div layout="column">
-	<md-button class="md-primary" ng-click="vm.showUserList = !vm.showUserList">Add Friends</md-button>
-	<div ng-show="vm.showUserList" class="fx-fade-down">
-		<md-input-container>
-			<label>Search For Friends</label>
-			<input type="text" ng-model="vm.friendSearch"></input>
-		</md-input-container>
-		<md-list>
-			<md-list-item layout="column" ng-repeat="user in vm.userList | filter: vm.friendSearch" ng-click="vm.addFriend(user)" class="md-2-line">
-				<h5 class="md-title">{{user.name}}</h5>
-				<p class="md-subhead">{{user.email}}</p>
-			</md-list-item>
-		</md-list>
+	<div ng-if="vm.Auth.isLoggedInUser(vm.user)">
+		<md-button class="md-primary" ng-click="vm.showUserList = !vm.showUserList">Add Friends</md-button>
+		<div ng-show="vm.showUserList" class="fx-fade-down">
+			<md-input-container>
+				<label>Search For Friends</label>
+				<input type="text" ng-model="vm.friendSearch"></input>
+			</md-input-container>
+			<md-list>
+				<md-list-item layout="column" ng-repeat="user in vm.userList | filter: vm.friendSearch" ng-click="vm.addFriend(user)" class="md-2-line">
+					<h5 class="md-title">{{user.name}}</h5>
+					<p class="md-subhead">{{user.email}}</p>
+				</md-list-item>
+			</md-list>
+		</div>
 	</div>
 	<md-divider></md-divider>
 	<md-list  class="fx-fade-up">
