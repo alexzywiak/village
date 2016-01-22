@@ -104,6 +104,7 @@ export const auth = ($http, $q, $window, jwtHelper, API) => {
       data: data
     }).then((resp) => {
       if (resp.data.id_token) {
+        saveToken(resp.data.id_token);
         return getLoggedInUser();
       } else {
         return $q.when(false);

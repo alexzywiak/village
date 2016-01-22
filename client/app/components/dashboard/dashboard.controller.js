@@ -42,25 +42,24 @@ class DashboardController {
     this.$state.go('login');
   }
 
-  addTask(task) {
-    this.Tasks.addTask(task)
-      .then(tasks => this.tasks = tasks);
-  }
+  // addTask(task) {
+  //   this.Tasks.addTask(task)
+  //     .then(tasks => this.tasks = tasks);
+  // }
 
-  checkTask(task) {
-    this.updateTask(task);
-  }
+  // checkTask(task) {
+  //   this.updateTask(task);
+  // }
 
-  updateTask(task) {
-    this.Tasks.updateTask(task)
-      .then(tasks => this.tasks = tasks);
-  }
+  // updateTask(task) {
+  //   this.Tasks.updateTask(task)
+  //     .then(tasks => this.tasks = tasks);
+  // }
 
-  updateUser() {
-    console.log(this.user);
-    this.Users.update(this.user);
-      // .then(user => this.user = user);
-  }
+  // updateUser() {
+  //   this.Users.update(this.user);
+  //     // .then(user => this.user = user);
+  // }
 
 }
 

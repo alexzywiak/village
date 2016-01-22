@@ -1,13 +1,13 @@
-<div flex layout="row">
+<div flex layout="row" class="container">
     <md-sidenav flex md-is-locked-open="true" md-component-id="left" class="md-whiteframe-2dp">
         
-        <friendlist user="vm.user" handle-update="vm.updateUser()"></friendlist>
+        <friendlist></friendlist>
 
     </md-sidenav>
     <md-content flex id="content" layout="column" layout-padding>
         <h2>{{vm.user.name || vm.user.email}}</h2>
 
-				<taskinput ng-if="vm.Auth.isLoggedInUser(vm.user)" flex user="vm.user" handle-update="vm.updateUser()"></taskinput>
+				<taskinput ng-if="vm.Auth.isLoggedInUser(vm.user)" flex user="vm.user"></taskinput>
 
         <tasklist user="vm.user"></tasklist>
         

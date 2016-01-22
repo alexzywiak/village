@@ -7,15 +7,8 @@ export const friendlistDirective = () => {
     template,
     controller,
     controllerAs: 'vm',
-    scope: {
-    	user: '=',
-    	handleUpdate: '&'
-    },
+    scope: {},
     restrict: 'E',
-    replace: true,
-    link: (scope) => {
-    	scope.vm.user = scope.user;
-    	scope.vm.handleUpdate = scope.handleUpdate;
-    }
+    replace: true
   };
 };

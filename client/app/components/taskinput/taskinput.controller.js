@@ -27,7 +27,6 @@ class TaskinputController {
       this.user.tasks.push(this.task);
       this.Tasks.addTask(this.user.id, this.task);
       this.resetTask();
-      this.handleUpdate();
     }
   }
 

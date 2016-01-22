@@ -1,25 +1,33 @@
+<div layout="column" layout-align="center">
+    <div layout="column" layout-align="center" ng-if="vm.Auth.isLoggedInUser(vm.user)">
+        <md-button class="md-accent md-raised" ng-click="vm.showUserList = !vm.showUserList">Add Friends</md-button>
+        <div layout="column" layout-align="center" ng-show="vm.showUserList" class="fx-fade-down">
+            <div layout="row" flex layout-align="center">
+            	<md-input-container>
+            	    <label>Search For Friends</label>
+            	    <input type="text" ng-model="vm.friendSearch"></input>
+            	</md-input-container>
+            </div>
+            <md-list>
+                <md-list-item layout="column" ng-repeat="user in vm.userList | filter: vm.friendSearch" ng-click="vm.addFriend(user)" class="md-3-line">
+                    <md-icon md-font-set="material-icons" class="md-primary large-icon">account_circle</md-icon>
+                    <div class="md-list-item-text" layout="column">
+                        <h3 class="md-title">{{user.name}}</h3>
+                        <p class="md-subhead">{{user.email}}</p>
+                    </div>
+                </md-list-item>
+            </md-list>
+        </div>
+    </div>
+    <md-divider></md-divider>
 
-<div layout="column">
-	<div ng-if="vm.Auth.isLoggedInUser(vm.user)">
-		<md-button class="md-primary" ng-click="vm.showUserList = !vm.showUserList">Add Friends</md-button>
-		<div ng-show="vm.showUserList" class="fx-fade-down">
-			<md-input-container>
-				<label>Search For Friends</label>
-				<input type="text" ng-model="vm.friendSearch"></input>
-			</md-input-container>
-			<md-list>
-				<md-list-item layout="column" ng-repeat="user in vm.userList | filter: vm.friendSearch" ng-click="vm.addFriend(user)" class="md-2-line">
-					<h5 class="md-title">{{user.name}}</h5>
-					<p class="md-subhead">{{user.email}}</p>
-				</md-list-item>
-			</md-list>
-		</div>
-	</div>
-	<md-divider></md-divider>
-	<md-list  class="fx-fade-up">
-		<md-list-item layout="column" ng-repeat="friend in vm.user.friends" class="md-2-line">
-			<a ui-sref="dashboard({userId: friend.id})"><h5 class="md-title">{{friend.name}}</h5>
-				<p class="md-subhead">{{friend.email}}</p></a>
-		</md-list-item>
-	</md-list>
+    <md-list>
+        <md-list-item ng-click="vm.viewFriend(friend.id)" ng-repeat="friend in vm.user.friends" class="md-2-line">
+            <md-icon md-font-set="material-icons" class="md-accent large-icon">account_circle</md-icon>
+            <div class="md-list-item-text" layout="column">
+            	<h3 class="md-title">{{friend.name}}</h3>
+            	<p class="md-subhead">{{friend.email}}</p>
+            </div>
+        </md-list-item>
+    </md-list>
 </div>

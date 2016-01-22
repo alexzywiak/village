@@ -1,29 +1,26 @@
 class FriendlistController {
-  constructor($scope, Users, Auth) {
+  constructor($scope, $state, Users, Auth) {
 
     this.$scope = $scope;
+    this.$state = $state;
     this.Users = Users;
     this.Auth = Auth;
 
     this.userList = [];
     this.user;
     this.showUserList = false;
-    
-    this.$scope.$watch('user', (user) => {
-      this.user = user;
-      if (!this.userList.length && this.user) {
-        this.Users.getAllUsers()
-          .then((users) => {
-            this.userList = this.filterFriends(users);
-          });
-      }
-    });
+
+    this.Auth.getLoggedInUser()
+      .then((user) => {
+        this.user = user
+        return this.Users.getAllUsers()
+      })
+      .then(users => this.userList = this.filterFriends(users));
   }
 
   addFriend(friend) {
     this.user.friends.push(friend);
-    console.log(this.user);
-    this.handleUpdate();
+    this.Users.update(this.user);
   }
 
   filterFriends(userList){
@@ -40,9 +37,14 @@ class FriendlistController {
     });
   }
 
+  viewFriend(id) {
+    console.log(`dashboard({userId: ${id}})`);
+    this.$state.transitionTo('dashboard', {userId: id});
+  }
+
 }
 
-FriendlistController.$inject = ['$scope', 'Users', 'Auth'];
+FriendlistController.$inject = ['$scope', '$state', 'Users', 'Auth'];
 
 export {
   FriendlistController
