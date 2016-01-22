@@ -5,10 +5,22 @@
   		</div>
     	<div layout="row" layout-align="center">
     		<md-input-container flex="80">
-    		    <label>Email</label>
-    		    <input ng-model="vm.user.email" type="email">
+    		    <label>Name</label>
+    		    <input ng-model="vm.user.name" type="text">
     		</md-input-container>
     	</div>
+        <div layout="row" layout-align="center">
+            <md-input-container flex="80">
+                <label>Email</label>
+                <input ng-model="vm.user.email" type="email">
+            </md-input-container>
+        </div>
+        <div layout="row" layout-align="center">
+            <md-input-container flex="80">
+                <label>Twitter Handle</label>
+                <input ng-model="vm.user.twitter" type="text">
+            </md-input-container>
+        </div>
     	<div layout="row" layout-align="center">
     		<md-input-container flex="80">
     		    <label>Password</label>
@@ -16,7 +28,7 @@
     		</md-input-container>
     	</div>
     	<div flex layout="row" layout-align="center">
-    		<md-button ng-click="vm.signUp(vm.user)" flex="50" class="md-raised md-accent">France</md-button>
+    		<md-button ng-click="vm.signUp(vm.user)" flex="50" class="md-raised md-accent">Sign Up, Hombre</md-button>
     	</div>
     </div>
 </md-content>
