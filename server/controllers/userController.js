@@ -120,13 +120,13 @@ module.exports = {
 
       }).then(function(user) {
         
-        if (req.body.monitoredTasks && req.body.friends.length) {
+        if (req.body.friends) {
           return user.updateRelations(req.body.friends, 'friends');
         } else {
           return user;
         }
       }).then(function(user) {
-        if (req.body.monitoredTasks && req.body.monitoredTasks.length) {
+        if (req.body.monitoredTasks) {
           return user.updateRelations(req.body.monitoredTasks, 'monitoredTasks');
         } else {
           return user;
