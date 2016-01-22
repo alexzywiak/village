@@ -9,8 +9,13 @@ class TaskinputController {
     });
 
     // Initialize newTask
+    this.resetTask();
+  }
+
+  resetTask() {
     this.task = {
-      dueDate: new Date()
+      dueDate: new Date(),
+      status: 'incomplete'
     };
   }
 
@@ -21,9 +26,7 @@ class TaskinputController {
     if (this.task.name.length) {
       this.user.tasks.push(this.task);
       this.Tasks.addTask(this.user.id, this.task);
-      this.task = {
-        dueDate: new Date()
-      };
+      this.resetTask();
       this.handleUpdate();
     }
   }
