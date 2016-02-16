@@ -80,7 +80,7 @@ gulp.task('todo', function() {
 
 gulp.task('build', ['todo'], function() {
   return gulp.src(paths.entry)
-    .pipe(webpack(require('./gulp/tasks/webpack/webpack.config')))
+    .pipe(webpack(require('./webpack.config')))
     .pipe(gulp.dest(paths.dest));
 });
 

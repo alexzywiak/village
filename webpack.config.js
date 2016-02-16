@@ -17,7 +17,14 @@ module.exports = {
       { test: /\.styl$/, loader: 'style!css!stylus' },
       { test: /\.css/, loader: 'style!css' },
       { test: /\.(png|jpg|jpeg)$/, loader: 'file' },
-      { test: /\.js$/, loader: 'babel?stage=1', exclude: [/client\/lib/, /node_modules/, /\.spec\.js/] }
+      { 
+        test: /\.js$/, 
+        loader: 'babel',
+        query: {
+          presets: ['es2015']
+        },
+        exclude: [/client\/lib/, /node_modules/, /\.spec\.js/] 
+      }
     ]
   },
 
